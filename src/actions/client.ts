@@ -1,5 +1,3 @@
-// src/actions/client.ts
-
 "use server"; // Bu pragma, bu kodun sadece sunucuda çalışacağını garanti eder.
 
 import { supabase } from "@/lib/supabase";
