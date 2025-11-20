@@ -1,13 +1,50 @@
-// src/components/ClientForm.tsx
-// Bu bileşen sadece formun HTML/Tailwind tasarımını içerir.
+"use client";
+
+import { useState, useTransition } from 'react';
+import { saveClient } from '@/actions/client';
 
 export default function ClientForm() {
+    const [isPending, startTransition] = useTransition();
+    const [responseMessage, setResponseMessage] = useState({ type: '', text: '' });
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setResponseMessage({ type: '', text: '' });
+
+        // SÜPER GÜVENLİ FİX: Form elementini HİÇBİR await'ten ÖNCE yakala.
+        const formElement = event.currentTarget;
+        const formData = new FormData(formElement);
+
+        startTransition(async () => {
+            const result = await saveClient(formData);
+
+            if (result.success) {
+                setResponseMessage({ type: 'success', text: result.message });
+                // Güvenli reset, async'ten önce yakaladığımız element ile yapılır.
+                formElement.reset();
+            } else {
+                setResponseMessage({ type: 'error', text: result.message });
+            }
+        });
+    };
+
     return (
         <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-100 max-w-lg mx-auto">
-            <form className="space-y-6">
+            {/* Formun ID'si artık gereksiz, onSubmit mantığına geri döndük */}
+            <form className="space-y-6" onSubmit={handleSubmit} method="post">
                 <h2 className="text-2xl font-bold text-gray-800 border-b pb-3 mb-4">
                     Yeni Müşteri Kaydı
                 </h2>
+
+                {/* Mesaj Kutusu */}
+                {responseMessage.text && (
+                    <div className={`p-3 rounded-lg text-sm font-medium ${responseMessage.type === 'success'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                        }`}>
+                        {responseMessage.text}
+                    </div>
+                )}
 
                 {/* Müşteri Adı */}
                 <div>
@@ -71,9 +108,11 @@ export default function ClientForm() {
                 {/* Kaydet Butonu */}
                 <button
                     type="submit"
-                    className="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-150"
+                    disabled={isPending}
+                    className={`w-full py-3 text-white font-semibold rounded-lg transition duration-150 ${isPending ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
+                        }`}
                 >
-                    Müşteriyi Kaydet
+                    {isPending ? 'Kaydediliyor...' : 'Müşteriyi Kaydet'}
                 </button>
             </form>
         </div>

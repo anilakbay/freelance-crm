@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google"; // Modern projelerde Inter kullanımı yaygındır.
+import { Inter } from "next/font/google"; 
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -19,10 +19,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // DİKKAT: Aşağıda return ( ile <html> etiketi arasında hiç boşluk bırakılmamıştır.
   return (
-    <html lang="tr"> {/* Dil ayarı Türkçe'ye (tr) çevrildi. */}
+    <html lang="tr"> 
       <body
-        className={`${inter.variable} antialiased`} // Kullanılan font değişkeni
+        className={`${inter.variable} antialiased`} 
       >
         {children}
       </body>
