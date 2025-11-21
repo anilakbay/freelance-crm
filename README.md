@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Freelance CRM
 
-## Getting Started
+Bu proje, freelancer'ların ve bağımsız çalışanların müşteri ilişkilerini daha düzenli yönetebilmesi için geliştirdiğim modern bir CRM (Müşteri İlişkileri Yönetimi) uygulamasıdır.
 
-First, run the development server:
+Excel tablolarında kaybolmak yerine, tüm müşteri verilerini güvenli, hızlı ve her yerden erişilebilir tek bir panelde toplamayı amaçladım.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
+🎯 Projenin Amacı
+
+Sadece "çalışan" bir uygulama yapmak değil; aynı zamanda modern web teknolojilerinin (Next.js App Router, Server Actions) gücünü kullanarak ölçeklenebilir, güvenli ve hızlı bir mimari kurmaktı.
+
+Bu projede şu an şunları yapabiliyorsunuz:
+
+Güvenli Giriş: Sadece yetkili kullanıcı (siz) panele erişebilir.
+
+Müşteri Yönetimi: Yeni müşteri ekleyebilir, listeyi görüntüleyebilir ve artık çalışmadığınız kişileri silebilirsiniz.
+
+Anlık Takip: Veriler anlık olarak güncellenir, sayfa yenilemeye gerek kalmaz.
+
+🛠️ Kullandığım Teknolojiler
+
+Projeyi geliştirirken sektörün en güncel ve kabul gören araçlarını tercih ettim:
+
+Next.js 16 (App Router): En güncel React framework'ü. Sayfa geçişleri ve veri yönetimi için kullandım.
+
+TypeScript: Kodun hatasız ve sürdürülebilir olması için tip güvenliği sağladım.
+
+Supabase (PostgreSQL): Veritabanı ve kimlik doğrulama (Auth) işlemleri için kullandım.
+
+Tailwind CSS: Hızlı ve modern bir arayüz tasarımı için.
+
+Server Actions: API yazmakla uğraşmadan, frontend üzerinden doğrudan ve güvenli veritabanı işlemleri yapmak için.
+
+🚀 Kurulum
+
+Bu projeyi kendi bilgisayarınızda çalıştırmak isterseniz şu adımları izleyebilirsiniz:
+
+Projeyi İndirin:
+
+git clone [https://github.com/KULLANICI_ADINIZ/freelance-crm.git](https://github.com/KULLANICI_ADINIZ/freelance-crm.git)
+cd freelance-crm
+
+Paketleri Yükleyin:
+
+pnpm install
+
+Supabase Ayarları:
+Ana dizinde .env.local adında bir dosya oluşturun ve kendi Supabase projenizin anahtarlarını girin:
+
+NEXT_PUBLIC_SUPABASE_URL=[https://sizin-projeniz.supabase.co](https://sizin-projeniz.supabase.co)
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sizin-anon-key-kodunuz
+
+Çalıştırın:
+
 pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Tarayıcınızda http://localhost:4000 adresine giderek uygulamayı görebilirsiniz.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+📂 Klasör Yapısı Hakkında
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Kodları incelerken kaybolmamanız için yapıyı şöyle kurguladım:
 
-## Learn More
+src/app: Sayfalarımız burada. (Örn: /clients sayfası app/clients/page.tsx içindedir).
 
-To learn more about Next.js, take a look at the following resources:
+src/components: Tekrar kullandığım parçalar (Formlar, Butonlar) burada.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+src/actions: Veritabanı işlemlerini ve sunucu taraflı iş mantığını (Business Logic) yöneten fonksiyonlar burada.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+src/lib: Supabase bağlantı ayarları gibi yardımcı dosyalar burada.

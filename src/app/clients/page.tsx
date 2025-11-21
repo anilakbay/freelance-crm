@@ -16,10 +16,10 @@ export default async function ClientsPage() {
   return (
     <main className="min-h-screen bg-gray-50 p-6 md:p-10">
       <div className="max-w-4xl mx-auto">
-        
+
         {/* ÜST BAR: Başlık, İstatistik ve Aksiyon Butonları */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-          
+
           {/* Sol Taraf: Başlık ve Sayı */}
           <div>
             <h1 className="text-3xl font-bold text-gray-800">Müşteri Listesi</h1>
@@ -31,8 +31,8 @@ export default async function ClientsPage() {
           {/* Sağ Taraf: Butonlar */}
           <div className="flex items-center gap-3">
             {/* 1. Yeni Ekle Butonu */}
-            <Link 
-              href="/new-client" 
+            <Link
+              href="/new-client"
               className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition shadow-sm flex items-center gap-2"
             >
               <span>+</span> Yeni Ekle
@@ -40,7 +40,7 @@ export default async function ClientsPage() {
 
             {/* 2. Çıkış Yap Butonu (Form ile Logout Action) */}
             <form action={logout}>
-              <button 
+              <button
                 className="px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition shadow-sm"
               >
                 Çıkış Yap
@@ -61,8 +61,8 @@ export default async function ClientsPage() {
             </div>
           ) : (
             clients?.map((client: any) => (
-              <div 
-                key={client.id} 
+              <div
+                key={client.id}
                 className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 hover:border-blue-300 transition-all flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
               >
                 <div>
@@ -72,13 +72,12 @@ export default async function ClientsPage() {
                     <span>📱 {client.phone || 'Yok'}</span>
                   </div>
                 </div>
-                
+
                 {/* Durum Rozeti (Badge) */}
-                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
-                  client.status === 'active' ? 'bg-green-100 text-green-800' : 
-                  client.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                  'bg-gray-100 text-gray-800'
-                }`}>
+                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${client.status === 'active' ? 'bg-green-100 text-green-800' :
+                    client.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-gray-100 text-gray-800'
+                  }`}>
                   {client.status}
                 </span>
               </div>

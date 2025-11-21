@@ -2,10 +2,9 @@
 "use server";
 
 import { supabase } from "@/lib/supabase";
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-// 1. Giriş Yapma Fonksiyonu
+// 1. GİRİŞ YAPMA (LOGIN)
 export async function login(formData: FormData) {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
@@ -19,11 +18,11 @@ export async function login(formData: FormData) {
         return { success: false, message: "Giriş başarısız: " + error.message };
     }
 
-    // Başarılıysa yönlendir
+    // Başarılıysa Müşteri Listesine yönlendir
     redirect("/clients");
 }
 
-// 2. Kayıt Olma Fonksiyonu
+// 2. KAYIT OLMA (SIGNUP)
 export async function signup(formData: FormData) {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
@@ -37,14 +36,14 @@ export async function signup(formData: FormData) {
         return { success: false, message: "Kayıt başarısız: " + error.message };
     }
 
-    return { success: true, message: "Kayıt başarılı! Lütfen e-postanızı onaylayın." };
+    return { success: true, message: "Kayıt başarılı! Giriş yapabilirsiniz." };
 }
 
 // 3. ÇIKIŞ YAPMA (LOGOUT)
 export async function logout() {
     // Supabase oturumunu kapat
     await supabase.auth.signOut();
-    
-    // Ana sayfaya veya giriş sayfasına yönlendir
+
+    // Giriş sayfasına geri gönder
     redirect("/auth");
-  }
+}

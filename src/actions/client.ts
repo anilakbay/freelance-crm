@@ -5,28 +5,44 @@ import { revalidatePath } from "next/cache";
 
 // Müşteri kaydetme asenkron fonksiyonu
 export async function saveClient(formData: FormData) {
+  // Form verilerini alıyoruz
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const phone = formData.get("phone") as string;
+  const status = formData.get("status") as string;
 
-    // Form verilerini alıyoruz
-    const name = formData.get("name") as string;
-    const email = formData.get("email") as string;
-    const phone = formData.get("phone") as string;
-    const status = formData.get("status") as string;
+  // Supabase'e kayıt işlemi
+  const { data, error } = await supabase.from("clients").insert({
+    name: name,
+    email: email || null,
+    phone: phone || null,
+    status: status,
+  });
 
-    // Supabase'e kayıt işlemi
-    const { data, error } = await supabase.from("clients").insert({
-        name: name,
-        email: email || null,
-        phone: phone || null,
-        status: status,
-    });
+  if (error) {
+    console.error("Supabase'e kayıt hatası:", error);
+    return { success: false, message: "Kayıt sırasında bir hata oluştu." };
+  }
 
-    if (error) {
-        console.error("Supabase'e kayıt hatası:", error);
-        return { success: false, message: "Kayıt sırasında bir hata oluştu." };
-    }
+  // Veri başarıyla güncellendiği için '/clients' sayfasının önbelleğini temizle
+  revalidatePath("/clients");
 
-    // Veri başarıyla güncellendiği için '/clients' sayfasının önbelleğini temizle
-    revalidatePath("/clients");
+  return { success: true, message: "Müşteri başarıyla kaydedildi." };
+}
 
-    return { success: true, message: "Müşteri başarıyla kaydedildi." };
+// MÜŞTERİ SİLME FONKSİYONU
+export async function deleteClient(formData: FormData) {
+  const id = formData.get("id"); // Formdan gelen gizli ID'yi al
+
+  if (!id) return;
+
+  const { error } = await supabase.from("clients").delete().eq("id", id); // ID'si eşleşen satırı sil
+
+  if (error) {
+    console.error("Silme hatası:", error);
+    return;
+  }
+
+  // Listeyi anında yenile
+  revalidatePath("/clients");
 }
