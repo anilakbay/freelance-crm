@@ -1,35 +1,81 @@
-import { NextResponse, type NextRequest } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { NextResponse, type NextRequest } from "next/server";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import type { Database } from "@/types/database";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+const protectedPrefixes = [
+  "/clients",
+  "/new-client",
+  "/projects",
+  "/new-project",
+];
 
 export async function middleware(request: NextRequest) {
-    // 1. Kullanıcının gitmek istediği yer neresi?
-    const path = request.nextUrl.pathname
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error(
+      "Supabase API keys are missing. Please check your environment variables."
+    );
+  }
 
-    // 2. Bu sayfalar korumalı mı? (Sadece giriş yapanlar görebilir)
-    // '/clients' veya '/new-client' ile başlayan her yer korumalıdır.
-    const isProtectedRoute = path.startsWith('/clients') || path.startsWith('/new-client')
+  const requestHeaders = new Headers(request.headers);
+  const response = NextResponse.next({
+    request: { headers: requestHeaders },
+  });
 
-    // 3. Supabase'den oturum kontrolü (Basit cookie kontrolü)
-    // Not: Middleware'de tam auth kontrolü için @supabase/ssr paketi gerekir ama
-    // şimdilik basit bir cookie kontrolü ile 'bekçi' mantığını kuralım.
-    const hasSession = request.cookies.has('sb-access-token') || request.cookies.has('supabase-auth-token')
-    // (Not: Projenin cookie ismine göre burası değişebilir, ama genelde session varsa cookie vardır)
+  const supabase = createServerClient<Database>(supabaseUrl, supabaseKey, {
+    cookies: {
+      get(name: string) {
+        return request.cookies.get(name)?.value;
+      },
+      set(name: string, value: string, options?: CookieOptions) {
+        response.cookies.set({
+          name,
+          value,
+          ...options,
+        });
+      },
+      remove(name: string, options?: CookieOptions) {
+        response.cookies.set({
+          name,
+          value: "",
+          ...options,
+          maxAge: 0,
+        });
+      },
+    },
+  });
 
-    // 4. KURAL: Giriş yapmamış biri, korumalı alana girmeye çalışırsa -> Giriş sayfasına at!
-    if (isProtectedRoute && !hasSession) {
-        // Ancak şimdilik geliştirme ortamında (localhost) olduğumuz ve cookie ayarları 
-        // tarayıcıdan tarayıcıya değişebildiği için bu kuralı çok sıkı tutmuyoruz.
-        // Gerçek bir projede burası: return NextResponse.redirect(new URL('/auth', request.url))
-    }
+  const path = request.nextUrl.pathname;
+  const isProtectedRoute = protectedPrefixes.some((prefix) =>
+    path.startsWith(prefix)
+  );
 
-    return NextResponse.next()
+  if (!isProtectedRoute) {
+    return response;
+  }
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/auth";
+    redirectUrl.searchParams.set("redirectedFrom", path);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  return response;
 }
 
-// Hangi sayfalarda çalışsın?
+// Middleware'in çalışacağı yolların konfigürasyonu
 export const config = {
-    matcher: [
-        '/clients/:path*',
-        '/new-client/:path*',
-        '/auth/:path*',
-    ],
+  matcher: [
+    /*
+     * API rotaları, statik dosyalar ve görseller hariç tüm yollarda çalışır.
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|logo.svg).*)',
+  ],
 }

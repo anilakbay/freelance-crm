@@ -1,68 +1,50 @@
-Freelance CRM
+## Freelance CRM
 
-Bu proje, freelancer'ların ve bağımsız çalışanların müşteri ilişkilerini daha düzenli yönetebilmesi için geliştirdiğim modern bir CRM (Müşteri İlişkileri Yönetimi) uygulamasıdır.
+Freelance CRM, bağımsız çalışanların müşteri ve proje akışlarını tek ekranda toplamak için geliştirdiğim eğitim amaçlı bir yönetim panelidir. Junior bir geliştirici olarak modern Next.js App Router ve Supabase mimarisini öğrenirken uygulamalı şekilde pekiştirmeyi hedefledim.
 
-Excel tablolarında kaybolmak yerine, tüm müşteri verilerini güvenli, hızlı ve her yerden erişilebilir tek bir panelde toplamayı amaçladım.
+## Öne Çıkanlar
+- Yetkili kullanıcı girişi ve oturum yönetimi
+- Müşteri ekleme, listeleme ve silme
+- Proje oluşturma, durum takibi ve bütçe yönetimi
+- Supabase üzerinde ilişkisel müşteri–proje modeli
+- Tamamı TypeScript ile tip güvenli kod tabanı
 
-🎯 Projenin Amacı
+## Teknoloji Yığını
+- Next.js 16 App Router
+- TypeScript ve Server Actions
+- Supabase (PostgreSQL + Auth)
+- Tailwind CSS
+- pnpm
 
-Sadece "çalışan" bir uygulama yapmak değil; aynı zamanda modern web teknolojilerinin (Next.js App Router, Server Actions) gücünü kullanarak ölçeklenebilir, güvenli ve hızlı bir mimari kurmaktı.
-
-Bu projede şu an şunları yapabiliyorsunuz:
-
-Güvenli Giriş: Sadece yetkili kullanıcı (siz) panele erişebilir.
-
-Müşteri Yönetimi: Yeni müşteri ekleyebilir, listeyi görüntüleyebilir ve artık çalışmadığınız kişileri silebilirsiniz.
-
-Anlık Takip: Veriler anlık olarak güncellenir, sayfa yenilemeye gerek kalmaz.
-
-🛠️ Kullandığım Teknolojiler
-
-Projeyi geliştirirken sektörün en güncel ve kabul gören araçlarını tercih ettim:
-
-Next.js 16 (App Router): En güncel React framework'ü. Sayfa geçişleri ve veri yönetimi için kullandım.
-
-TypeScript: Kodun hatasız ve sürdürülebilir olması için tip güvenliği sağladım.
-
-Supabase (PostgreSQL): Veritabanı ve kimlik doğrulama (Auth) işlemleri için kullandım.
-
-Tailwind CSS: Hızlı ve modern bir arayüz tasarımı için.
-
-Server Actions: API yazmakla uğraşmadan, frontend üzerinden doğrudan ve güvenli veritabanı işlemleri yapmak için.
-
-🚀 Kurulum
-
-Bu projeyi kendi bilgisayarınızda çalıştırmak isterseniz şu adımları izleyebilirsiniz:
-
-Projeyi İndirin:
-
-git clone [https://github.com/KULLANICI_ADINIZ/freelance-crm.git](https://github.com/KULLANICI_ADINIZ/freelance-crm.git)
+## Kurulum
+```bash
+git clone https://github.com/KULLANICI_ADINIZ/freelance-crm.git
 cd freelance-crm
-
-Paketleri Yükleyin:
-
 pnpm install
+```
 
-Supabase Ayarları:
-Ana dizinde .env.local adında bir dosya oluşturun ve kendi Supabase projenizin anahtarlarını girin:
+### Ortam Değişkenleri
+1. `env.example` dosyasını kopyalayıp `.env.local` olarak kaydedin.
+2. Supabase projenizdeki `NEXT_PUBLIC_SUPABASE_URL` ve `NEXT_PUBLIC_SUPABASE_ANON_KEY` değerlerini girin.
+3. Yalnızca yönetim senaryolarında ihtiyaç varsa `SUPABASE_SERVICE_ROLE_KEY` ekleyin.
 
-NEXT_PUBLIC_SUPABASE_URL=[https://sizin-projeniz.supabase.co](https://sizin-projeniz.supabase.co)
-NEXT_PUBLIC_SUPABASE_ANON_KEY=sizin-anon-key-kodunuz
-
-Çalıştırın:
-
+### Geliştirme
+```bash
 pnpm dev
+```
+Varsayılan olarak `http://localhost:3000` adresinde yayınlanır.
 
-Tarayıcınızda http://localhost:4000 adresine giderek uygulamayı görebilirsiniz.
+## Proje Yapısı
+- `src/app`: Rotalar, sayfa bileşenleri, layout ve stil dosyaları
+- `src/actions`: Server Action fonksiyonları ve veri iş kuralları
+- `src/components`: Form ve paylaşılmış arayüz bileşenleri
+- `src/lib`: Supabase istemcileri ve yardımcılar
+- `src/types`: Supabase veritabanı tipleri ve arayüzler
 
-📂 Klasör Yapısı Hakkında
+## Öğrenme Notları
+- App Router + Server Actions mimarisini kullanarak formları API yazmadan Supabase'e bağlamayı öğrendim.
+- Tip güvenliği için Supabase şemasından üretilmiş `Database` tiplerini projenin farklı noktalarında referans aldım.
+- Kullanıcı geri bildirimleri ve boş durum senaryolarını tasarlayarak UX tarafında da düşünmeye çalıştım.
 
-Kodları incelerken kaybolmamanız için yapıyı şöyle kurguladım:
-
-src/app: Sayfalarımız burada. (Örn: /clients sayfası app/clients/page.tsx içindedir).
-
-src/components: Tekrar kullandığım parçalar (Formlar, Butonlar) burada.
-
-src/actions: Veritabanı işlemlerini ve sunucu taraflı iş mantığını (Business Logic) yöneten fonksiyonlar burada.
-
-src/lib: Supabase bağlantı ayarları gibi yardımcı dosyalar burada.
+## Katkı ve Lisans
+Repository kişisel bir öğrenme projesidir; fork/issue açarak görüşlerinizi paylaşabilirsiniz. Üretim ortamında kullanmadan önce kendi gereksinimleriniz doğrultusunda gözden geçirmeniz önerilir.

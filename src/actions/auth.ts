@@ -1,49 +1,52 @@
-// src/actions/auth.ts
 "use server";
 
-import { supabase } from "@/lib/supabase";
 import { redirect } from "next/navigation";
+import { createSupabaseServerClient } from "@/lib/supabase";
 
-// 1. GİRİŞ YAPMA (LOGIN)
 export async function login(formData: FormData) {
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+  const supabase = await createSupabaseServerClient();
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
 
-    const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-    });
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
-    if (error) {
-        return { success: false, message: "Giriş başarısız: " + error.message };
-    }
+  if (error) {
+    return { success: false, message: error.message };
+  }
 
-    // Başarılıysa Müşteri Listesine yönlendir
-    redirect("/clients");
+  redirect("/clients");
 }
 
-// 2. KAYIT OLMA (SIGNUP)
 export async function signup(formData: FormData) {
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+  const supabase = await createSupabaseServerClient();
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
 
-    const { error } = await supabase.auth.signUp({
-        email,
-        password,
-    });
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+  });
 
-    if (error) {
-        return { success: false, message: "Kayıt başarısız: " + error.message };
-    }
+  if (error) {
+    return { success: false, message: error.message };
+  }
 
-    return { success: true, message: "Kayıt başarılı! Giriş yapabilirsiniz." };
+  if (data.session) {
+    redirect("/clients");
+  }
+
+  return {
+    success: true,
+    message:
+      "Kayıt başarılı! E-posta doğrulamasını tamamladıktan sonra giriş yapabilirsiniz.",
+  };
 }
 
-// 3. ÇIKIŞ YAPMA (LOGOUT)
 export async function logout() {
-    // Supabase oturumunu kapat
-    await supabase.auth.signOut();
-
-    // Giriş sayfasına geri gönder
-    redirect("/auth");
+  const supabase = await createSupabaseServerClient();
+  await supabase.auth.signOut();
+  redirect("/auth");
 }

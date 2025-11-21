@@ -4,14 +4,22 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
-// Projenin SEO ve Tarayıcı Başlığı burasıdır.
+// Projenin SEO ve Tarayıcı Sekmesi Ayarları
 export const metadata: Metadata = {
   title: {
-    default: "Freelance CRM | Müşteri Yönetim Sistemi",
+    default: "Freelance CRM | Profesyonel İş Yönetimi",
     template: "%s | Freelance CRM",
   },
-  description: "Freelancer'lar için özel olarak tasarlanmış, müşterileri ve projeleri yönetme platformu.",
-  keywords: ["Freelance CRM", "Next.js", "Supabase", "Müşteri Takibi"],
+  description:
+    "Freelancer'lar için geliştirilmiş modern müşteri ve proje yönetim sistemi. İşlerinizi tek panelden, güvenle yönetin.",
+  keywords: [
+    "Freelance",
+    "CRM",
+    "Müşteri Takibi",
+    "Proje Yönetimi",
+    "Next.js",
+    "Supabase",
+  ],
 };
 
 export default function RootLayout({
@@ -19,14 +27,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // DİKKAT: Aşağıda return ( ile <html> etiketi arasında hiç boşluk bırakılmamıştır.
+  // DİKKAT: return ile html etiketi arasında boşluk bırakılmamıştır (Hydration Hatası Önlemi)
   return (
     <html lang="tr">
-      <body
-        className={`${inter.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <body className={`${inter.variable} antialiased`}>{children}</body>
     </html>
   );
 }

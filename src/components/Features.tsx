@@ -11,7 +11,7 @@ const featureItems = [
     title: "Güvenli Altyapı",
     description: "Verilerinizi Next.js 16 ve Supabase'in güvenli mimarisi ile koruyun."
   },
-  { // YENİ EKLENEN 4. ÖZELLİK
+  {
     title: "Kolay Proje Yönetimi",
     description: "Müşterilerinizle ilişkilendirilmiş yeni projeleri hızla oluşturun ve tüm süreçleri tek ekranda takip edin."
   },
@@ -25,7 +25,7 @@ export default function Features() {
           Freelance CRM Size Neler Sunar?
         </h2>
 
-        <div className="grid md:grid-cols-4 gap-8"> {/* Tailwind'de 4. sütunu göstermek için md:grid-cols-4 olarak güncelledim */}
+        <div className="grid md:grid-cols-4 gap-8">
           {featureItems.map((feature, index) => (
             <div
               key={index}

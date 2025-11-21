@@ -1,26 +1,73 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: var(--font-inter);
+
+  /* Marka Renkleri: Daha canlı ve güven veren tonlar */
+  --color-brand: #3b82f6; /* Blue-500: Ana aksiyon rengi */
+  --color-brand-dark: #1d4ed8; /* Blue-700: Hover rengi */
+  --color-accent: #0ea5e9; /* Sky-500: Vurgu rengi */
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --foreground: #0f172a; /* Slate-900: Simsiyah yerine, göz yormayan derin lacivert */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* ARKA PLAN KATMANLARI (Senin istediğin yapı) */
+  --bg-top: #ffffff; /* Üst: Temiz Beyaz */
+  --bg-middle: #f0f9ff; /* Orta: Çok hafif, ferah bir Gök Mavisi (Sky-50) */
+  --bg-bottom: #f1f5f9; /* Alt: Sayfayı kapatan tok Gri (Slate-100) */
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+
+  /* SİHİRLİ DOKUNUŞ: 3 Katmanlı Dikey Gradyan 
+     0% - 30% : Beyaz (Hero alanı net görünsün)
+     30% - 80%: Açık Mavi (Özellikler ve içerik burada parlasın)
+     80% - 100%: Gri (Footer zemine otursun)
+  */
+  background: linear-gradient(
+    to bottom,
+    var(--bg-top) 0%,
+    var(--bg-middle) 30%,
+    var(--bg-middle) 80%,
+    var(--bg-bottom) 100%
+  );
+
+  background-attachment: fixed; /* Sayfa kayarken arka plan sabit kalsın (Premium hissi) */
+  min-height: 100vh;
+
+  /* Yazıların jilet gibi net görünmesi için */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Seçim Rengi: Standart mavi yerine kendi markamız */
+::selection {
+  background-color: var(--color-brand);
+  color: #ffffff;
+}
+
+/* Modern Scrollbar (Kaydırma Çubuğu) */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-top);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1; /* Slate-300 */
+  border-radius: 5px;
+  border: 2px solid var(--bg-top); /* Kenarlardan boşluk bırakır, şık durur */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8; /* Slate-400 */
+}
+
+html {
+  scroll-behavior: smooth;
 }

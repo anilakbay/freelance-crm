@@ -2,9 +2,18 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import ProjectForm from "@/components/ProjectForm";
 import { Client } from "@/types/client";
+import { Project } from "@/types/project";
 import { createSupabaseServerClient } from "@/lib/supabase";
 
-export default async function NewProjectPage() {
+interface ProjectEditPageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default async function ProjectEditPage({
+  params,
+}: ProjectEditPageProps) {
   const supabase = await createSupabaseServerClient();
   const {
     data: { session },
@@ -14,52 +23,37 @@ export default async function NewProjectPage() {
     redirect("/auth");
   }
 
-  const { data, error } = await supabase
-    .from("clients")
-    .select("id, name")
-    .order("created_at", { ascending: false });
+  const projectId = Number(params.id);
 
-  if (error) {
+  const [{ data: clientsData }, { data: projectData, error: projectError }] =
+    await Promise.all([
+      supabase.from("clients").select("id, name"),
+      supabase.from("projects").select("*").eq("id", projectId).single(),
+    ]);
+
+  if (projectError || !projectData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
         <div className="text-center p-8 bg-white rounded-xl shadow-lg">
           <h2 className="text-xl font-bold text-red-600 mb-4">
-            Müşteri listesi alınamadı
+            Proje Bulunamadı
           </h2>
-          <p className="text-gray-600">{error.message}</p>
           <Link
-            href="/clients"
+            href="/projects"
             className="text-blue-600 hover:underline mt-4 inline-block font-medium"
           >
-            Müşteri listesine dön
+            Proje Listesine Geri Dön
           </Link>
         </div>
       </div>
     );
   }
 
-  const clients = (data as Client[] | null) ?? [];
-
-  if (clients.length === 0) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
-        <div className="text-center p-8 bg-white rounded-xl shadow-lg">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
-            Önce müşteri ekleyin
-          </h2>
-          <p className="text-gray-600">
-            Proje oluşturabilmek için en az bir müşteri kaydı gerekir.
-          </p>
-          <Link
-            href="/new-client"
-            className="text-blue-600 hover:underline mt-4 inline-block font-medium"
-          >
-            Şimdi müşteri ekle
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  const clients = (clientsData as Client[] | null) ?? [];
+  const project = projectData as Project;
+  const formattedDeadline = project.deadline
+    ? project.deadline.split("T")[0]
+    : "";
 
   return (
     <main className="min-h-screen bg-gray-50 p-6 md:p-10 flex flex-col items-center pt-12">
@@ -78,14 +72,18 @@ export default async function NewProjectPage() {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            aria-hidden
           >
             <path d="M19 12H5" />
             <path d="m12 19-7-7 7-7" />
           </svg>
-          Proje listesine dön
+          Proje Listesine Geri Dön
         </Link>
-        <ProjectForm clients={clients} />
+
+        <ProjectForm
+          clients={clients}
+          initialData={{ ...project, deadline: formattedDeadline }}
+          isEditing
+        />
       </div>
     </main>
   );

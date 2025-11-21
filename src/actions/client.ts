@@ -1,48 +1,65 @@
-"use server"; // Bu pragma, bu kodun sadece sunucuda çalışacağını garanti eder.
+"use server";
 
-import { supabase } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
+import { createSupabaseServerClient } from "@/lib/supabase";
+import type { Database } from "@/types/database";
 
-// Müşteri kaydetme asenkron fonksiyonu
+type ClientStatus = Database["public"]["Tables"]["clients"]["Insert"]["status"];
+
+// Yeni müşteri kaydı
 export async function saveClient(formData: FormData) {
-  // Form verilerini alıyoruz
+  const supabase = await createSupabaseServerClient();
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const phone = formData.get("phone") as string;
-  const status = formData.get("status") as string;
+  const statusValue = formData.get("status");
 
-  // Supabase'e kayıt işlemi
-  const { data, error } = await supabase.from("clients").insert({
-    name: name,
+  if (
+    !statusValue ||
+    !["active", "passive", "pending"].includes(statusValue as string)
+  ) {
+    return {
+      success: false,
+      message: "Geçersiz müşteri durumu seçildi.",
+    };
+  }
+
+  const status = statusValue as ClientStatus;
+
+  const { error } = await supabase.from("clients").insert({
+    name,
     email: email || null,
     phone: phone || null,
-    status: status,
+    status,
   });
 
   if (error) {
-    console.error("Supabase'e kayıt hatası:", error);
-    return { success: false, message: "Kayıt sırasında bir hata oluştu." };
+    return { success: false, message: "Kayıt başarısız: " + error.message };
   }
 
-  // Veri başarıyla güncellendiği için '/clients' sayfasının önbelleğini temizle
   revalidatePath("/clients");
-
   return { success: true, message: "Müşteri başarıyla kaydedildi." };
 }
 
-// MÜŞTERİ SİLME FONKSİYONU
+// Müşteri silme işlemi
 export async function deleteClient(formData: FormData) {
-  const id = formData.get("id"); // Formdan gelen gizli ID'yi al
+  const supabase = await createSupabaseServerClient();
+  const idValue = formData.get("id");
 
-  if (!id) return;
+  if (!idValue) return;
 
-  const { error } = await supabase.from("clients").delete().eq("id", id); // ID'si eşleşen satırı sil
-
-  if (error) {
-    console.error("Silme hatası:", error);
+  const id = Number(idValue);
+  if (Number.isNaN(id)) {
+    console.error("Geçersiz ID değeri:", idValue);
     return;
   }
 
-  // Listeyi anında yenile
+  const { error } = await supabase.from("clients").delete().eq("id", id);
+
+  if (error) {
+    console.error("Silme Hatası:", error);
+    return;
+  }
+
   revalidatePath("/clients");
 }

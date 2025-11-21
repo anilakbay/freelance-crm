@@ -1,9 +1,19 @@
-import { supabase } from "@/lib/supabase";
 import Link from "next/link";
-import { Project } from "@/types/project"; // Tip sözleşmesini kullandık!
+import { redirect } from "next/navigation";
+import type { PostgrestError } from "@supabase/supabase-js";
+import { Project } from "@/types/project";
+import { createSupabaseServerClient } from "@/lib/supabase";
 
 export default async function ProjectsPage() {
-  // Proje verilerini çekiyoruz. clients(name) kısmı JOIN işlemidir.
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    redirect("/auth");
+  }
+
   const { data: projects, error } = (await supabase
     .from("projects")
     .select(
@@ -14,7 +24,7 @@ export default async function ProjectsPage() {
     )
     .order("created_at", { ascending: false })) as {
     data: Project[] | null;
-    error: any;
+    error: PostgrestError | null;
   };
 
   if (error) {
@@ -26,7 +36,6 @@ export default async function ProjectsPage() {
   return (
     <main className="min-h-screen bg-gray-50 p-6 md:p-10">
       <div className="max-w-5xl mx-auto">
-        {/* ÜST BAR */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
@@ -53,7 +62,6 @@ export default async function ProjectsPage() {
           </div>
         </div>
 
-        {/* LİSTELEME ALANI */}
         <div className="grid gap-4">
           {totalProjects === 0 ? (
             <div className="bg-white p-12 rounded-xl shadow-sm text-center border border-gray-200">
@@ -68,7 +76,6 @@ export default async function ProjectsPage() {
               </Link>
             </div>
           ) : (
-            // MAP İŞLEMİ
             projects?.map((project) => (
               <div
                 key={project.id}
@@ -83,7 +90,6 @@ export default async function ProjectsPage() {
                   </p>
                 </div>
 
-                {/* Durum Rozeti */}
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
                     project.status === "completed"
@@ -96,7 +102,6 @@ export default async function ProjectsPage() {
                   {project.status}
                 </span>
 
-                {/* Fiyat ve Tarih */}
                 <div className="text-right hidden sm:block">
                   <p className="text-sm font-semibold text-gray-800">
                     {project.price
@@ -107,8 +112,6 @@ export default async function ProjectsPage() {
                     Teslim: {project.deadline || "Bilinmiyor"}
                   </p>
                 </div>
-
-                {/* Aksiyonlar (Sil/Düzenle) - Şimdilik Boş */}
               </div>
             ))
           )}
