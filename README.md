@@ -9,12 +9,18 @@ Freelance CRM, bağımsız çalışanların müşteri ve proje akışlarını te
 - Supabase üzerinde ilişkisel müşteri–proje modeli
 - Tamamı TypeScript ile tip güvenli kod tabanı
 
-## Teknoloji Yığını
+## Teknolojiler
 - Next.js 16 App Router
 - TypeScript ve Server Actions
 - Supabase (PostgreSQL + Auth)
 - Tailwind CSS
 - pnpm
+
+## Görseller
+![Ana Sayfa](/img/crm1.png)
+![Müşteri Listesi](/img/crm2.png)
+![Proje Detayları](/img/crm3.png)
+![Proje Oluşturma](/img/crm4.png)
 
 ## Kurulum
 ```bash
@@ -32,7 +38,7 @@ pnpm install
 ```bash
 pnpm dev
 ```
-Varsayılan olarak `http://localhost:3000` adresinde yayınlanır.
+Varsayılan olarak `http://localhost:4000` adresinde yayınlanır.
 
 ## Proje Yapısı
 - `src/app`: Rotalar, sayfa bileşenleri, layout ve stil dosyaları
