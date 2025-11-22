@@ -19,30 +19,16 @@ export async function middleware(request: NextRequest) {
     );
   }
 
-  const requestHeaders = new Headers(request.headers);
-  const response = NextResponse.next({
-    request: { headers: requestHeaders },
-  });
+  const response = NextResponse.next();
 
   const supabase = createServerClient<Database>(supabaseUrl, supabaseKey, {
     cookies: {
-      get(name: string) {
-        return request.cookies.get(name)?.value;
+      get: (name: string) => request.cookies.get(name)?.value,
+      set: (name: string, value: string, options?: CookieOptions) => {
+        response.cookies.set({ name, value, ...options });
       },
-      set(name: string, value: string, options?: CookieOptions) {
-        response.cookies.set({
-          name,
-          value,
-          ...options,
-        });
-      },
-      remove(name: string, options?: CookieOptions) {
-        response.cookies.set({
-          name,
-          value: "",
-          ...options,
-          maxAge: 0,
-        });
+      remove: (name: string, options?: CookieOptions) => {
+        response.cookies.set({ name, value: "", ...options, maxAge: 0 });
       },
     },
   });
@@ -52,9 +38,7 @@ export async function middleware(request: NextRequest) {
     path.startsWith(prefix)
   );
 
-  if (!isProtectedRoute) {
-    return response;
-  }
+  if (!isProtectedRoute) return response;
 
   const {
     data: { session },
@@ -70,12 +54,8 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
-// Middleware'in çalışacağı yolların konfigürasyonu
 export const config = {
   matcher: [
-    /*
-     * API rotaları, statik dosyalar ve görseller hariç tüm yollarda çalışır.
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico|logo.svg).*)',
+    "/((?!api|_next/static|_next/image|favicon.ico|logo.svg).*)",
   ],
-}
+};

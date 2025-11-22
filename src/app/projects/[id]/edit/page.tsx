@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import ProjectForm from "@/components/ProjectForm";
+import ProjectForm from "@/components/forms/ProjectForm";
 import { Client } from "@/types/client";
 import { Project } from "@/types/project";
 import { createSupabaseServerClient } from "@/lib/supabase";

@@ -1,32 +1,26 @@
 @import "tailwindcss";
 
-@theme {
-  --font-sans: var(--font-inter);
-
-  /* Marka Renkleri: Daha canlı ve güven veren tonlar */
-  --color-brand: #3b82f6; /* Blue-500: Ana aksiyon rengi */
-  --color-brand-dark: #1d4ed8; /* Blue-700: Hover rengi */
-  --color-accent: #0ea5e9; /* Sky-500: Vurgu rengi */
-}
-
+/* Temel Font ve Renkler */
 :root {
-  --foreground: #0f172a; /* Slate-900: Simsiyah yerine, göz yormayan derin lacivert */
+  --font-sans: 'Inter', sans-serif;
 
-  /* ARKA PLAN KATMANLARI (Senin istediğin yapı) */
-  --bg-top: #ffffff; /* Üst: Temiz Beyaz */
-  --bg-middle: #f0f9ff; /* Orta: Çok hafif, ferah bir Gök Mavisi (Sky-50) */
-  --bg-bottom: #f1f5f9; /* Alt: Sayfayı kapatan tok Gri (Slate-100) */
+  /* Marka Renkleri */
+  --color-brand: #3b82f6;      /* Blue-500: Ana aksiyon rengi */
+  --color-brand-dark: #1e40af; /* Blue-800: Hover rengi */
+  --color-accent: #06b6d4;     /* Cyan-500: Vurgu rengi */
+
+  --foreground: #0f172a;       /* Slate-900 */
+  --bg-top: #f1f5f9;            /* Üst: Hero alanı daha koyu */
+  --bg-middle: #dbeafe;         /* Orta: Özellikler alanı */
+  --bg-bottom: #e2e8f0;         /* Alt: Footer alanı */
 }
+
 
 body {
-  color: var(--foreground);
   font-family: var(--font-sans);
+  color: var(--foreground);
+  min-height: 100vh;
 
-  /* SİHİRLİ DOKUNUŞ: 3 Katmanlı Dikey Gradyan 
-     0% - 30% : Beyaz (Hero alanı net görünsün)
-     30% - 80%: Açık Mavi (Özellikler ve içerik burada parlasın)
-     80% - 100%: Gri (Footer zemine otursun)
-  */
   background: linear-gradient(
     to bottom,
     var(--bg-top) 0%,
@@ -34,22 +28,19 @@ body {
     var(--bg-middle) 80%,
     var(--bg-bottom) 100%
   );
+  background-attachment: fixed;
 
-  background-attachment: fixed; /* Sayfa kayarken arka plan sabit kalsın (Premium hissi) */
-  min-height: 100vh;
-
-  /* Yazıların jilet gibi net görünmesi için */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Seçim Rengi: Standart mavi yerine kendi markamız */
+/* Seçim rengi */
 ::selection {
-  background-color: var(--color-brand);
+  background-color: var(--color-accent);
   color: #ffffff;
 }
 
-/* Modern Scrollbar (Kaydırma Çubuğu) */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -59,15 +50,32 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #cbd5e1; /* Slate-300 */
+  background-color: #94a3b8; /* Slate-400 */
   border-radius: 5px;
-  border: 2px solid var(--bg-top); /* Kenarlardan boşluk bırakır, şık durur */
+  border: 2px solid var(--bg-top);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #94a3b8; /* Slate-400 */
+  background-color: #64748b; /* Slate-500 */
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Button ve link hover efektleri */
+button, a {
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover, a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Input ve select focus */
+input:focus, select:focus, textarea:focus {
+  border-color: var(--color-accent);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
 }
