@@ -15,7 +15,6 @@
   --bg-bottom: #e2e8f0;         /* Alt: Footer alanı */
 }
 
-
 body {
   font-family: var(--font-sans);
   color: var(--foreground);
