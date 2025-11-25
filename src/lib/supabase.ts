@@ -6,52 +6,36 @@ import {
 import { cookies } from "next/headers";
 import type { Database } from "@/types/database";
 
-type CookieStore = Awaited<ReturnType<typeof cookies>>;
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 if (!supabaseUrl || !supabaseKey) {
   throw new Error(
-    "Supabase API anahtarları eksik! Lütfen .env.local dosyasını kontrol et."
+    "Supabase URL veya ANON KEY bulunamadı! .env.local dosyasını kontrol edin."
   );
 }
 
-const withCookieAdapter = (cookieStore: CookieStore) => ({
-  get(name: string) {
-    return cookieStore.get(name)?.value;
-  },
-  set(name: string, value: string, options?: CookieOptions) {
-    // Server Component'larda cookie yazılamadığı için hata almamak adına try/catch
+const cookieAdapter = (cookieStore: Awaited<ReturnType<typeof cookies>>) => ({
+  get: (name: string) => cookieStore.get(name)?.value ?? null,
+  set: (name: string, value: string, options?: CookieOptions) => {
     try {
       cookieStore.set(name, value, options);
-    } catch {
-      // no-op
-    }
+    } catch {}
   },
-  remove(name: string, options?: CookieOptions) {
+  remove: (name: string, options?: CookieOptions) => {
     try {
-      if (options) {
-        cookieStore.delete({
-          name,
-          ...options,
-        });
-      } else {
-        cookieStore.delete(name);
-      }
-    } catch {
-      // no-op
-    }
+      cookieStore.delete(name);
+    } catch {}
   },
 });
 
 export const createSupabaseServerClient = async () => {
   const cookieStore = await cookies();
-
   return createServerClient<Database>(supabaseUrl, supabaseKey, {
-    cookies: withCookieAdapter(cookieStore),
+    cookies: cookieAdapter(cookieStore),
   });
 };
 
-export const createSupabaseBrowserClient = () =>
-  createBrowserClient<Database>(supabaseUrl, supabaseKey);
+export const createSupabaseBrowserClient = () => {
+  return createBrowserClient<Database>(supabaseUrl, supabaseKey);
+};

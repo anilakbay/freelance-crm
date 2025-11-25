@@ -2,10 +2,17 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import type { Database } from "@/types/database";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-const protectedPrefixes = [
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error(
+    "Supabase URL veya ANON KEY bulunamadı! .env.local dosyasını kontrol edin."
+  );
+}
+
+// Korunacak route'lar
+const protectedRoutes = [
   "/clients",
   "/new-client",
   "/projects",
@@ -13,17 +20,17 @@ const protectedPrefixes = [
 ];
 
 export async function middleware(request: NextRequest) {
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error(
-      "Supabase API keys are missing. Please check your environment variables."
-    );
-  }
+  const path = request.nextUrl.pathname;
+  const isProtected = protectedRoutes.some((prefix) => path.startsWith(prefix));
+
+  if (!isProtected) return NextResponse.next();
 
   const response = NextResponse.next();
 
+  // Supabase server client oluşturuluyor
   const supabase = createServerClient<Database>(supabaseUrl, supabaseKey, {
     cookies: {
-      get: (name: string) => request.cookies.get(name)?.value,
+      get: (name: string) => request.cookies.get(name)?.value ?? null,
       set: (name: string, value: string, options?: CookieOptions) => {
         response.cookies.set({ name, value, ...options });
       },
@@ -33,13 +40,7 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  const path = request.nextUrl.pathname;
-  const isProtectedRoute = protectedPrefixes.some((prefix) =>
-    path.startsWith(prefix)
-  );
-
-  if (!isProtectedRoute) return response;
-
+  // Kullanıcı session kontrolü
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -55,7 +56,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|logo.svg).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|logo.svg).*)"],
 };

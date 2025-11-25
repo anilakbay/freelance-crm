@@ -1,10 +1,11 @@
 import Link from "next/link";
 import Features from "@/components/Features";
-import Footer from "@/components/Footer";
+// Footer'ı sildik çünkü layout.tsx'ten gelecek!
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center bg-white">
+      {/* HERO SECTION */}
       <div className="w-full bg-gradient-to-b from-blue-50 via-white to-white border-b border-blue-100 pt-24 pb-20 px-6 text-center">
         <div className="max-w-4xl mx-auto">
           <h1 className="mb-6 text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
@@ -56,6 +57,7 @@ export default function Home() {
         </div>
       </div>
 
+      {/* ARA METİN */}
       <section className="w-full bg-slate-50 border-y border-slate-200 py-20 px-6 text-center">
         <div className="max-w-3xl mx-auto">
           <h3 className="text-2xl md:text-3xl font-bold text-slate-800 mb-4">
@@ -72,8 +74,10 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ÖZELLİKLER */}
       <Features />
-      <Footer />
+
+      {/* Footer buradan kaldırıldı */}
     </main>
   );
 }
