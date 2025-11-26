@@ -1,11 +1,7 @@
 // --------------------------------------------------------
-// BİLEŞEN: Sidebar (Yan Menü)
+// BİLEŞEN: Sidebar (Yan Menü) - FİNAL VE HATASIZ VERSİYON
 // DOSYA: src/components/Sidebar.tsx
-// GÖREV: Uygulamanın sol tarafındaki ana navigasyon menüsüdür.
-// ÖZELLİKLER:
-// 1. Masaüstünde sabit, mobilde animasyonlu (slide-in) çalışır.
-// 2. Sayfa değişiminde mobil menüyü otomatik kapatır.
-// 3. Aktif sayfayı algılar ve mavi renkle vurgular.
+// GÖREV: Uygulamanın navigasyonu ve Çıkış Yapma aksiyonunu yönetir.
 // --------------------------------------------------------
 
 "use client";
@@ -13,21 +9,19 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { logout } from "@/actions/auth"; // Güvenli çıkış aksiyonu
 
 export default function Sidebar() {
-  // Mevcut sayfa yolunu (URL) alır. Örn: "/projects"
   const pathname = usePathname();
-
-  // Mobil menünün açık/kapalı durumunu yöneten state
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  // Linke tıklandığında (sayfa değiştiğinde) mobil menüyü kapat
+  // Linke tıklandığında (sayfa değiştiğinde) mobil menüyü otomatik kapat
   useEffect(() => {
     setIsMobileOpen(false);
   }, [pathname]);
 
   // --------------------------------------------------------
-  // MENÜ YAPILANDIRMASI (Yeni madde eklemek için burayı kullan)
+  // MENÜ YAPILANDIRMASI
   // --------------------------------------------------------
   const menuItems = [
     {
@@ -181,7 +175,7 @@ export default function Sidebar() {
           </span>
         </Link>
 
-        {/* Hamburger Menü Butonu (Açma) */}
+        {/* Hamburger Menü Butonu */}
         <button
           onClick={() => setIsMobileOpen(true)}
           className="p-2 rounded-md hover:bg-slate-800 text-slate-300 hover:text-white transition-colors"
@@ -253,7 +247,7 @@ export default function Sidebar() {
             </span>
           </Link>
 
-          {/* Mobilde Menüyü Kapatma Butonu */}
+          {/* Mobilde Çarpı (Kapat) Butonu */}
           <button
             onClick={() => setIsMobileOpen(false)}
             className="md:hidden ml-auto text-slate-400 hover:text-white"
@@ -278,7 +272,7 @@ export default function Sidebar() {
         {/* --- B. NAVİGASYON LİNKLERİ --- */}
         <nav className="p-4 space-y-2 flex-1 overflow-y-auto mt-2">
           {menuItems.map((item) => {
-            // Hangi sayfadaysak o linki aktif yap
+            // Aktif sayfa kontrolü
             const isActive = pathname.startsWith(item.href);
 
             return (
@@ -309,26 +303,30 @@ export default function Sidebar() {
 
         {/* --- C. ALT KISIM (ÇIKIŞ YAP) --- */}
         <div className="p-4 border-t border-slate-800 mt-auto bg-slate-900/50">
-          <Link
-            href="/auth?mode=login"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-red-400 transition-colors group"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-5 h-5 group-hover:text-red-400 transition-colors"
+          <form action={logout}>
+            {" "}
+            {/* Login Linki yerine Server Action geldi */}
+            <button
+              type="submit"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-red-400 transition-colors group w-full"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
-              />
-            </svg>
-            Çıkış Yap
-          </Link>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5 group-hover:text-red-400 transition-colors"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
+                />
+              </svg>
+              Çıkış Yap
+            </button>
+          </form>
         </div>
       </aside>
     </>

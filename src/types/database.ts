@@ -12,28 +12,28 @@ export interface Database {
       // --- MÜŞTERİLER TABLOSU ---
       clients: {
         Row: {
-          id: number;
           created_at: string;
-          name: string;
           email: string | null;
+          id: number;
+          name: string;
           phone: string | null;
           status: "active" | "passive" | "pending";
-          user_id: string; // YENİ EKLENDİ (UUID)
+          user_id: string;
         };
         Insert: {
-          id?: number;
           created_at?: string;
-          name: string;
           email?: string | null;
+          id?: number;
+          name: string;
           phone?: string | null;
           status?: "active" | "passive" | "pending";
-          user_id?: string; // Opsiyonel çünkü default: auth.uid()
+          user_id?: string;
         };
         Update: {
-          id?: number;
           created_at?: string;
-          name?: string;
           email?: string | null;
+          id?: number;
+          name?: string;
           phone?: string | null;
           status?: "active" | "passive" | "pending";
           user_id?: string;
@@ -51,33 +51,33 @@ export interface Database {
       // --- PROJELER TABLOSU ---
       projects: {
         Row: {
-          id: number;
-          created_at: string;
-          title: string;
           client_id: number;
-          price: number | null;
+          created_at: string;
           deadline: string | null;
+          id: number;
+          price: number | null;
           status: "active" | "completed" | "cancelled" | "pending";
-          user_id: string; // YENİ EKLENDİ (UUID)
+          title: string;
+          user_id: string;
         };
         Insert: {
-          id?: number;
-          created_at?: string;
-          title: string;
           client_id: number;
-          price?: number | null;
+          created_at?: string;
           deadline?: string | null;
+          id?: number;
+          price?: number | null;
           status?: "active" | "completed" | "cancelled" | "pending";
-          user_id?: string; // Opsiyonel çünkü default: auth.uid()
+          title: string;
+          user_id?: string;
         };
         Update: {
-          id?: number;
-          created_at?: string;
-          title?: string;
           client_id?: number;
-          price?: number | null;
+          created_at?: string;
           deadline?: string | null;
+          id?: number;
+          price?: number | null;
           status?: "active" | "completed" | "cancelled" | "pending";
+          title?: string;
           user_id?: string;
         };
         Relationships: [
@@ -96,7 +96,7 @@ export interface Database {
         ];
       };
 
-      // --- GÖREVLER TABLOSU (YENİ) ---
+      // --- GÖREVLER TABLOSU ---
       tasks: {
         Row: {
           id: number;
@@ -112,11 +112,11 @@ export interface Database {
           id?: number;
           created_at?: string;
           title: string;
-          status?: string; // Default: 'pending'
-          priority?: string; // Default: 'medium'
+          status?: string;
+          priority?: string;
           due_date?: string | null;
           project_id: number;
-          user_id?: string; // Default: auth.uid()
+          user_id?: string;
         };
         Update: {
           id?: number;
@@ -143,7 +143,54 @@ export interface Database {
           }
         ];
       };
+
+      // --- FATURALAR TABLOSU (DOĞRU YERİNDE) ---
+      invoices: {
+        Row: {
+          id: number;
+          client_id: number;
+          user_id: string;
+          invoice_date: string;
+          due_date: string;
+          amount: number;
+          status: string;
+          created_at: string;
+          notes: string | null;
+        };
+        Insert: {
+          client_id: number;
+          amount: number;
+          invoice_date: string;
+          due_date: string;
+          status?: string;
+          user_id?: string;
+        };
+        Update: {
+          id?: number;
+          client_id?: number;
+          amount?: number;
+          invoice_date?: string;
+          due_date?: string;
+          status?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "invoices_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "invoices_client_id_fkey";
+            columns: ["client_id"];
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
+
     Views: Record<string, never>;
     Functions: Record<string, never>;
     Enums: Record<string, never>;
