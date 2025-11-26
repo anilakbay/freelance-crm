@@ -6,7 +6,7 @@ import { Project } from "@/types/project";
 import { Client } from "@/types/client";
 
 interface ProjectFormProps {
-  clients: Client[];
+  clients: { id: number; name: string }[]; // Sadece id ve isim yeterli diyoruz
   initialData?: Project & { deadline: string | null };
   isEditing?: boolean;
 }

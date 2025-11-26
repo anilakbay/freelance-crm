@@ -1,12 +1,19 @@
+// --------------------------------------------------------
+// SAYFA: Müşteri Listesi
+// DOSYA: src/app/(dashboard)/clients/page.tsx
+// GÖREV: Kayıtlı müşterileri listeler, silme ve ekleme seçenekleri sunar.
+// --------------------------------------------------------
+
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { logout } from "@/actions/auth";
+import { createSupabaseServerClient } from "@/lib/supabase";
 import { deleteClient } from "@/actions/client";
 import { Client } from "@/types/client";
-import { createSupabaseServerClient } from "@/lib/supabase";
 
 export default async function ClientsPage() {
   const supabase = await createSupabaseServerClient();
+
+  // 1. Oturum Kontrolü
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -15,120 +22,173 @@ export default async function ClientsPage() {
     redirect("/auth");
   }
 
+  // 2. Verileri Veritabanından Çek
   const { data, error } = await supabase
     .from("clients")
     .select("*")
     .order("created_at", { ascending: false });
 
   if (error) {
-    return <div className="p-10 text-red-500">Hata: {error.message}</div>;
+    return (
+      <div className="p-6 text-red-600 bg-red-50 border border-red-200 rounded-lg">
+        Hata: {error.message}
+      </div>
+    );
   }
 
-  const clients = data as Client[];
+  // 3. Veri Hazırlığı ve Tip Dönüşümü
+  const clients = (data as Client[]) || [];
+  const hasClients = clients.length > 0;
 
   return (
-    <main className="min-h-screen bg-gray-50 p-6 md:p-10">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">
-              Müşteri Listesi
-            </h1>
-            <p className="text-gray-500 text-sm mt-1">
-              Toplam {clients?.length || 0} müşteri kayıtlı
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/new-client"
-              className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition shadow-sm flex items-center gap-2"
-            >
-              <span>+</span> Yeni Ekle
-            </Link>
-
-            <form action={logout}>
-              <button className="px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition shadow-sm">
-                Çıkış Yap
-              </button>
-            </form>
-          </div>
+    <div className="space-y-6">
+      {/* --- ÜST BAŞLIK VE BUTON --- */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Müşteri Listesi</h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Toplam{" "}
+            <span className="font-semibold text-gray-900">
+              {clients.length}
+            </span>{" "}
+            müşteri kayıtlı.
+          </p>
         </div>
 
-        <div className="grid gap-4">
-          {clients?.length === 0 ? (
-            <div className="bg-white p-12 rounded-xl shadow-sm text-center border border-gray-200">
-              <p className="text-gray-500 text-lg">
-                Henüz hiç müşteri eklenmemiş.
-              </p>
-              <Link
-                href="/new-client"
-                className="text-blue-600 hover:underline mt-2 inline-block"
-              >
-                İlk müşterini ekle
-              </Link>
-            </div>
-          ) : (
-            clients?.map((client) => (
-              <div
-                key={client.id}
-                className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 hover:border-blue-300 transition-all flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
-              >
-                <div>
-                  <h2 className="text-lg font-bold text-gray-900">
-                    {client.name}
-                  </h2>
-                  <div className="flex flex-col sm:flex-row gap-1 sm:gap-4 mt-1 text-sm text-gray-500">
-                    <span>📧 {client.email || "Yok"}</span>
-                    <span>📱 {client.phone || "Yok"}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
-                      client.status === "active"
-                        ? "bg-green-100 text-green-800"
-                        : client.status === "pending"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-gray-100 text-gray-800"
-                    }`}
-                  >
-                    {client.status}
-                  </span>
-
-                  <form action={deleteClient}>
-                    <input type="hidden" name="id" value={client.id} />
-                    <button
-                      type="submit"
-                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Kaydı Sil"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M3 6h18" />
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                        <line x1="10" x2="10" y1="11" y2="17" />
-                        <line x1="14" x2="14" y1="11" y2="17" />
-                      </svg>
-                    </button>
-                  </form>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+        <Link
+          href="/clients/new"
+          className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-bold text-white shadow-md hover:bg-blue-700 transition-all gap-2"
+        >
+          <span>+</span> Yeni Müşteri
+        </Link>
       </div>
-    </main>
+
+      {/* --- LİSTE ALANI --- */}
+      {!hasClients ? (
+        // BOŞ DURUM (Empty State)
+        <div className="bg-white p-12 rounded-xl shadow-sm text-center border border-gray-200 flex flex-col items-center">
+          <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4 text-gray-400">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-8 h-8"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900">
+            Henüz müşteri yok
+          </h3>
+          <Link
+            href="/clients/new"
+            className="text-blue-600 hover:underline mt-2"
+          >
+            İlk müşterini ekle
+          </Link>
+        </div>
+      ) : (
+        // DOLU DURUM (Tablo)
+        <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    Müşteri
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    İletişim
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    Durum
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                    İşlemler
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {clients.map((client) => (
+                  <tr
+                    key={client.id}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
+                    {/* İsim Alanı */}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-bold text-gray-900">
+                        {client.name}
+                      </div>
+                    </td>
+
+                    {/* İletişim Alanı */}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        {client.email || "-"}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {client.phone || "-"}
+                      </div>
+                    </td>
+
+                    {/* Durum Rozeti */}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                          client.status === "active"
+                            ? "bg-green-50 text-green-700 border-green-200"
+                            : client.status === "pending"
+                            ? "bg-yellow-50 text-yellow-700 border-yellow-200"
+                            : "bg-gray-50 text-gray-600 border-gray-200"
+                        }`}
+                      >
+                        {client.status === "active" && "Aktif"}
+                        {client.status === "pending" && "Beklemede"}
+                        {client.status === "passive" && "Pasif"}
+                      </span>
+                    </td>
+
+                    {/* İşlemler (Silme Butonu) */}
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div className="flex justify-end items-center gap-2">
+                        <form action={deleteClient}>
+                          <input type="hidden" name="id" value={client.id} />
+                          <button
+                            type="submit"
+                            className="text-gray-400 hover:text-red-600 transition-colors p-1 rounded hover:bg-red-50"
+                            title="Sil"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-5 h-5"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                              />
+                            </svg>
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
