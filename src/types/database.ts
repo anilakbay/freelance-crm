@@ -9,60 +9,76 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      // --- MÜŞTERİLER TABLOSU ---
       clients: {
         Row: {
-          created_at: string;
-          email: string | null;
           id: number;
+          created_at: string;
           name: string;
+          email: string | null;
           phone: string | null;
           status: "active" | "passive" | "pending";
+          user_id: string; // YENİ EKLENDİ (UUID)
         };
         Insert: {
-          created_at?: string;
-          email?: string | null;
           id?: number;
+          created_at?: string;
           name: string;
+          email?: string | null;
           phone?: string | null;
           status?: "active" | "passive" | "pending";
+          user_id?: string; // Opsiyonel çünkü default: auth.uid()
         };
         Update: {
-          created_at?: string;
-          email?: string | null;
           id?: number;
+          created_at?: string;
           name?: string;
+          email?: string | null;
           phone?: string | null;
           status?: "active" | "passive" | "pending";
+          user_id?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "clients_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          }
+        ];
       };
+
+      // --- PROJELER TABLOSU ---
       projects: {
         Row: {
-          client_id: number;
-          created_at: string;
-          deadline: string | null;
           id: number;
-          price: number | null;
-          status: "active" | "completed" | "cancelled" | "pending";
+          created_at: string;
           title: string;
+          client_id: number;
+          price: number | null;
+          deadline: string | null;
+          status: "active" | "completed" | "cancelled" | "pending";
+          user_id: string; // YENİ EKLENDİ (UUID)
         };
         Insert: {
-          client_id: number;
-          created_at?: string;
-          deadline?: string | null;
           id?: number;
-          price?: number | null;
-          status?: "active" | "completed" | "cancelled" | "pending";
+          created_at?: string;
           title: string;
+          client_id: number;
+          price?: number | null;
+          deadline?: string | null;
+          status?: "active" | "completed" | "cancelled" | "pending";
+          user_id?: string; // Opsiyonel çünkü default: auth.uid()
         };
         Update: {
-          client_id?: number;
-          created_at?: string;
-          deadline?: string | null;
           id?: number;
-          price?: number | null;
-          status?: "active" | "completed" | "cancelled" | "pending";
+          created_at?: string;
           title?: string;
+          client_id?: number;
+          price?: number | null;
+          deadline?: string | null;
+          status?: "active" | "completed" | "cancelled" | "pending";
+          user_id?: string;
         };
         Relationships: [
           {
@@ -71,6 +87,60 @@ export interface Database {
             referencedRelation: "clients";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "projects_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+
+      // --- GÖREVLER TABLOSU (YENİ) ---
+      tasks: {
+        Row: {
+          id: number;
+          created_at: string;
+          title: string;
+          status: string;
+          priority: string;
+          due_date: string | null;
+          project_id: number;
+          user_id: string;
+        };
+        Insert: {
+          id?: number;
+          created_at?: string;
+          title: string;
+          status?: string; // Default: 'pending'
+          priority?: string; // Default: 'medium'
+          due_date?: string | null;
+          project_id: number;
+          user_id?: string; // Default: auth.uid()
+        };
+        Update: {
+          id?: number;
+          created_at?: string;
+          title?: string;
+          status?: string;
+          priority?: string;
+          due_date?: string | null;
+          project_id?: number;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "tasks_project_id_fkey";
+            columns: ["project_id"];
+            referencedRelation: "projects";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "tasks_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          }
         ];
       };
     };
@@ -80,4 +150,3 @@ export interface Database {
     CompositeTypes: Record<string, never>;
   };
 }
-
