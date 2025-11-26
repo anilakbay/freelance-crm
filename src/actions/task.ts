@@ -1,7 +1,7 @@
 // --------------------------------------------------------
 // SERVER ACTION: Görev İşlemleri
 // DOSYA: src/actions/task.ts
-// GÖREV: Yeni görev ekleme ve silme işlemlerini yapar.
+// GÖREV: Görev ekleme ve durum güncelleme işlemlerini yönetir.
 // --------------------------------------------------------
 
 "use server";
@@ -9,10 +9,11 @@
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "@/lib/supabase";
 
+// --- 1. YENİ GÖREV KAYDI ---
 export async function saveTask(formData: FormData) {
   const supabase = await createSupabaseServerClient();
 
-  // 1. Oturum Kontrolü
+  // A. Oturum Kontrolü
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -21,14 +22,13 @@ export async function saveTask(formData: FormData) {
     return { success: false, message: "Oturum açmanız gerekiyor." };
   }
 
-  // 2. Verileri Formdan Al
+  // B. Verileri Al
   const title = formData.get("title") as string;
   const project_id = formData.get("project_id");
   const priority = formData.get("priority") as string;
   const due_date = formData.get("due_date") as string;
-  // Status varsayılan olarak 'pending' gidecek
 
-  // 3. Zorunlu Alan Kontrolü
+  // C. Zorunlu Alan Kontrolü
   if (!title || !project_id) {
     return {
       success: false,
@@ -36,14 +36,14 @@ export async function saveTask(formData: FormData) {
     };
   }
 
-  // 4. Kayıt İşlemi
+  // D. Kayıt İşlemi
   const { error } = await supabase.from("tasks").insert({
     title,
     project_id: Number(project_id),
     priority,
-    due_date: due_date || null, // Tarih seçilmediyse boş gönder
-    status: "pending", // İlk açılışta hep "beklemede" olur
-    user_id: session.user.id, // Görevi ekleyen kişi
+    due_date: due_date || null,
+    status: "pending", // Varsayılan durum
+    user_id: session.user.id, // Sahiplik
   });
 
   if (error) {
@@ -51,7 +51,34 @@ export async function saveTask(formData: FormData) {
     return { success: false, message: "Hata: " + error.message };
   }
 
-  // 5. Listeyi Yenile
+  // E. Listeyi Yenile
   revalidatePath("/tasks");
   return { success: true, message: "Görev başarıyla eklendi." };
+}
+
+// --- 2. DURUM GÜNCELLEME (Toggle Status) ---
+export async function toggleTaskStatus(id: number, currentStatus: string) {
+  const supabase = await createSupabaseServerClient();
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) return;
+
+  // Durumu tersine çevir (done <-> pending)
+  const newStatus = currentStatus === "done" ? "pending" : "done";
+
+  const { error } = await supabase
+    .from("tasks")
+    .update({ status: newStatus })
+    .eq("id", id)
+    .eq("user_id", session.user.id); // Güvenlik kontrolü
+
+  if (error) {
+    console.error("Durum Güncelleme Hatası:", error);
+    return;
+  }
+
+  revalidatePath("/tasks");
 }
