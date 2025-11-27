@@ -14,14 +14,29 @@ import {
   Tooltip,
 } from "recharts";
 
-const data = [
-  { name: "Aktif", value: 5, color: "#3B82F6" }, // Mavi
-  { name: "Tamamlandı", value: 3, color: "#10B981" }, // Yeşil
-  { name: "Beklemede", value: 2, color: "#F59E0B" }, // Sarı
-  { name: "İptal", value: 1, color: "#EF4444" }, // Kırmızı
-];
+// Recharts uyumluluğu için esnek tip tanımı
+interface StatusData {
+  name: string;
+  value: number;
+  [key: string]: any;
+}
 
-export default function StatusChart() {
+const STATUS_COLORS: Record<string, string> = {
+  Aktif: "#3B82F6",
+  Tamamlandı: "#10B981",
+  Beklemede: "#F59E0B",
+  İptal: "#EF4444",
+};
+
+export default function StatusChart({ data }: { data: StatusData[] }) {
+  if (!data || data.length === 0) {
+    return (
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 h-[300px] flex items-center justify-center text-gray-500">
+        Henüz proje verisi yok.
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 h-[300px] flex flex-col">
       <h2 className="text-lg font-bold text-gray-900 mb-2">Proje Durumları</h2>
@@ -33,7 +48,7 @@ export default function StatusChart() {
               data={data}
               cx="50%"
               cy="50%"
-              innerRadius={50} // Donut görünümü için iç boşluk
+              innerRadius={50}
               outerRadius={70}
               paddingAngle={5}
               dataKey="value"
@@ -41,7 +56,7 @@ export default function StatusChart() {
               {data.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
-                  fill={entry.color}
+                  fill={STATUS_COLORS[entry.name] || "#A1A1AA"}
                   strokeWidth={0}
                 />
               ))}
@@ -55,6 +70,10 @@ export default function StatusChart() {
                 boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
               }}
               itemStyle={{ color: "#374151" }}
+              formatter={(value: number, name: string) => [
+                `${value} Proje`,
+                name,
+              ]}
             />
 
             <Legend

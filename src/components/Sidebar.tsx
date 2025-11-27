@@ -1,7 +1,7 @@
 // --------------------------------------------------------
-// BİLEŞEN: Sidebar (Yan Menü) - FİNAL VE HATASIZ VERSİYON
+// BİLEŞEN: Sidebar (Yan Menü) - FİNAL
 // DOSYA: src/components/Sidebar.tsx
-// GÖREV: Uygulamanın navigasyonu ve Çıkış Yapma aksiyonunu yönetir.
+// GÖREV: Navigasyon, Tıklanabilir Logo ve Çıkış Yapma.
 // --------------------------------------------------------
 
 "use client";
@@ -21,7 +21,7 @@ export default function Sidebar() {
   }, [pathname]);
 
   // --------------------------------------------------------
-  // MENÜ YAPILANDIRMASI
+  // MENÜ YAPILANDIRMASI (6 Madde)
   // --------------------------------------------------------
   const menuItems = [
     {
@@ -148,11 +148,8 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* ------------------------------------------------ */}
-      {/* 1. MOBİL HEADER (Sadece küçük ekranlarda görünür) */}
-      {/* ------------------------------------------------ */}
+      {/* 1. MOBİL HEADER */}
       <div className="md:hidden flex items-center justify-between bg-slate-900 text-white p-4 sticky top-0 z-40 w-full shadow-md">
-        {/* Mobil Logo */}
         <Link href="/dashboard" className="flex items-center gap-2">
           <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-600 text-white">
             <svg
@@ -175,7 +172,6 @@ export default function Sidebar() {
           </span>
         </Link>
 
-        {/* Hamburger Menü Butonu */}
         <button
           onClick={() => setIsMobileOpen(true)}
           className="p-2 rounded-md hover:bg-slate-800 text-slate-300 hover:text-white transition-colors"
@@ -197,9 +193,7 @@ export default function Sidebar() {
         </button>
       </div>
 
-      {/* ------------------------------------------------ */}
-      {/* 2. OVERLAY (Mobil menü açılınca arkadaki karartı) */}
-      {/* ------------------------------------------------ */}
+      {/* 2. OVERLAY */}
       {isMobileOpen && (
         <div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
@@ -207,50 +201,48 @@ export default function Sidebar() {
         />
       )}
 
-      {/* ------------------------------------------------ */}
-      {/* 3. ASIL SIDEBAR YAPISI */}
-      {/* ------------------------------------------------ */}
+      {/* 3. SIDEBAR */}
       <aside
-        className={`
-          fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white transition-transform duration-300 ease-in-out border-r border-slate-800
-          md:translate-x-0 md:static md:block flex flex-col h-full
-          ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
-        `}
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white transition-transform duration-300 ease-in-out border-r border-slate-800 md:translate-x-0 md:static md:block flex flex-col h-full ${
+          isMobileOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
-        {/* --- A. LOGO VE BAŞLIK ALANI --- */}
-        <div className="flex items-center gap-3 p-6 border-b border-slate-800 h-24">
-          {/* Mavi Kutu Logo */}
-          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-900/40">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
-              />
-            </svg>
-          </div>
-
-          {/* Marka İsmi ve Slogan */}
-          <Link href="/dashboard" className="flex flex-col">
-            <span className="text-lg font-bold text-white tracking-wide leading-none">
-              Freelance <span className="text-blue-500">CRM</span>
-            </span>
-            <span className="text-[10px] text-slate-400 font-medium tracking-wider uppercase mt-1">
-              Yönetim Paneli
-            </span>
+        {/* --- LOGO ALANI (TIKLANABİLİR) --- */}
+        <div className="flex items-center justify-between border-b border-slate-800 h-24 px-6">
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-3 group w-full h-full"
+          >
+            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-900/40 group-hover:scale-105 transition-transform">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
+                />
+              </svg>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-lg font-bold text-white tracking-wide leading-none">
+                Freelance <span className="text-blue-500">CRM</span>
+              </span>
+              <span className="text-[10px] text-slate-400 font-medium tracking-wider uppercase mt-1">
+                Yönetim Paneli
+              </span>
+            </div>
           </Link>
 
-          {/* Mobilde Çarpı (Kapat) Butonu */}
+          {/* Mobilde Kapat Butonu */}
           <button
             onClick={() => setIsMobileOpen(false)}
-            className="md:hidden ml-auto text-slate-400 hover:text-white"
+            className="md:hidden ml-2 text-slate-400 hover:text-white"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -269,23 +261,21 @@ export default function Sidebar() {
           </button>
         </div>
 
-        {/* --- B. NAVİGASYON LİNKLERİ --- */}
+        {/* NAVİGASYON LİNKLERİ */}
         <nav className="p-4 space-y-2 flex-1 overflow-y-auto mt-2">
           {menuItems.map((item) => {
-            // Aktif sayfa kontrolü
             const isActive = pathname.startsWith(item.href);
-
             return (
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => setIsMobileOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 group ${
                   isActive
                     ? "bg-blue-600 text-white shadow-md shadow-blue-900/20"
                     : "text-slate-400 hover:bg-slate-800 hover:text-white"
                 }`}
               >
-                {/* İkon: Aktifse beyaz, pasifse gri (hoverda beyaz) */}
                 <span
                   className={
                     isActive
@@ -301,11 +291,9 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* --- C. ALT KISIM (ÇIKIŞ YAP) --- */}
+        {/* ÇIKIŞ YAP BUTONU */}
         <div className="p-4 border-t border-slate-800 mt-auto bg-slate-900/50">
           <form action={logout}>
-            {" "}
-            {/* Login Linki yerine Server Action geldi */}
             <button
               type="submit"
               className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-red-400 transition-colors group w-full"

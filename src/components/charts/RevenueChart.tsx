@@ -1,5 +1,5 @@
 // --------------------------------------------------------
-// BİLEŞEN: Aylık Gelir Grafiği (Bar Chart)
+// BİLEŞEN: Aylık Gelir Grafiği (Bar Chart) - FİNAL
 // DOSYA: src/components/charts/RevenueChart.tsx
 // --------------------------------------------------------
 
@@ -15,18 +15,17 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-// TODO: İleride bu veriler veritabanından dinamik olarak çekilebilir.
-const data = [
-  { name: "Oca", kazanc: 12000 },
-  { name: "Şub", kazanc: 19000 },
-  { name: "Mar", kazanc: 15000 },
-  { name: "Nis", kazanc: 28000 },
-  { name: "May", kazanc: 14000 },
-  { name: "Haz", kazanc: 32000 },
-  { name: "Tem", kazanc: 22000 },
-];
+// 1. Grafiğin beklediği veri tipi
+interface ChartData {
+  month: string;
+  total: number;
+}
 
-export default function RevenueChart() {
+// 2. Bileşenin aldığı prop'lar (data'yı zorunlu kılıyoruz)
+export default function RevenueChart({ data }: { data: ChartData[] }) {
+  // Veri boşsa veya null ise hata vermesin, boş dizi kullansın
+  const chartData = data || [];
+
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 h-[300px]">
       <h2 className="text-lg font-bold text-gray-900 mb-4">
@@ -35,7 +34,7 @@ export default function RevenueChart() {
 
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
-          data={data}
+          data={chartData}
           margin={{ top: 5, right: 5, left: -20, bottom: 0 }}
         >
           <CartesianGrid
@@ -45,7 +44,7 @@ export default function RevenueChart() {
           />
 
           <XAxis
-            dataKey="name"
+            dataKey="month"
             axisLine={false}
             tickLine={false}
             tick={{ fill: "#6B7280", fontSize: 12 }}
@@ -74,7 +73,7 @@ export default function RevenueChart() {
           />
 
           <Bar
-            dataKey="kazanc"
+            dataKey="total"
             fill="#3B82F6"
             radius={[4, 4, 0, 0]}
             barSize={30}
