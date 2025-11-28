@@ -1,7 +1,6 @@
 // --------------------------------------------------------
-// SAYFA: Proje Düzenleme (Edit)
+// SAYFA: Proje Düzenleme (Edit) - MOBİL UYUMLU
 // DOSYA: src/app/(dashboard)/projects/[id]/edit/page.tsx
-// GÖREV: Mevcut projenin verilerini çeker ve düzenleme formunu açar.
 // --------------------------------------------------------
 
 import Link from "next/link";
@@ -10,7 +9,6 @@ import ProjectForm from "@/components/forms/ProjectForm";
 import { createSupabaseServerClient } from "@/lib/supabase";
 import { Project } from "@/types/project";
 
-// Next.js 15+ için params Promise olarak tanımlanır
 interface ProjectEditPageProps {
   params: Promise<{ id: string }>;
 }
@@ -20,7 +18,6 @@ export default async function ProjectEditPage({
 }: ProjectEditPageProps) {
   const supabase = await createSupabaseServerClient();
 
-  // 1. Oturum Kontrolü
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -29,7 +26,6 @@ export default async function ProjectEditPage({
     redirect("/auth");
   }
 
-  // 2. ID'yi Güvenli Şekilde Al (Await ile)
   const resolvedParams = await params;
   const projectId = Number(resolvedParams.id);
 
@@ -44,7 +40,6 @@ export default async function ProjectEditPage({
     );
   }
 
-  // 3. Verileri Çek (Paralel Sorgu)
   const [{ data: clientsData }, { data: projectData, error: projectError }] =
     await Promise.all([
       supabase
@@ -54,11 +49,10 @@ export default async function ProjectEditPage({
       supabase.from("projects").select("*").eq("id", projectId).single(),
     ]);
 
-  // 4. Hata Yönetimi (Proje Yoksa)
   if (projectError || !projectData) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-center">
-        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 max-w-md">
+      <div className="flex flex-col items-center justify-center p-6 text-center min-h-[50vh]">
+        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 max-w-md w-full">
           <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -92,19 +86,16 @@ export default async function ProjectEditPage({
     );
   }
 
-  // 5. Veri Hazırlığı ve Render
-  // clientsData'yı formun beklediği tipe zorluyoruz (güvenli çünkü select ile sadece id, name çektik)
   const clients = (clientsData as { id: number; name: string }[]) || [];
   const project = projectData as Project;
 
-  // Tarih formatını input için ayarla (YYYY-MM-DD)
   const formattedDeadline = project.deadline
     ? new Date(project.deadline).toISOString().split("T")[0]
     : "";
 
   return (
-    <div className="max-w-2xl mx-auto py-6">
-      {/* Üst Kısım */}
+    // MOBİL AYARI: px-4 eklendi (Kenarlara yapışmayı önler)
+    <div className="max-w-2xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
       <div className="mb-6">
         <Link
           href="/projects"
@@ -126,11 +117,14 @@ export default async function ProjectEditPage({
           </svg>
           Listeye Geri Dön
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">Projeyi Düzenle</h1>
+        {/* MOBİL AYARI: text-xl (mobil) -> text-2xl (masaüstü) */}
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+          Projeyi Düzenle
+        </h1>
       </div>
 
-      {/* Form Alanı */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+      {/* MOBİL AYARI: p-4 (mobil) -> p-6 (masaüstü) */}
+      <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200">
         <ProjectForm
           clients={clients}
           initialData={{ ...project, deadline: formattedDeadline }}

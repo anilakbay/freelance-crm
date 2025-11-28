@@ -1,3 +1,8 @@
+// --------------------------------------------------------
+// BİLEŞEN: Kimlik Doğrulama Formu
+// DOSYA: src/components/forms/AuthForm.tsx
+// --------------------------------------------------------
+
 "use client";
 
 import { useState } from "react";
@@ -5,13 +10,20 @@ import { login, signup } from "@/actions/auth";
 
 export default function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
-  const [message, setMessage] = useState({ type: "", text: "" });
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Ortak stil tanımı (DRY Prensibi - İnsan Dokunuşu)
+  const inputClass =
+    "w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none";
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
-    setMessage({ type: "", text: "" });
+    setMessage(null); // Önceki mesajı temizle
 
     const formData = new FormData(event.currentTarget);
     const action = isLogin ? login : signup;
@@ -24,22 +36,16 @@ export default function AuthForm() {
           type: result.success ? "success" : "error",
           text: result.message,
         });
-        // Sadece gerçek bir hata varsa loading'i durdur
+        // Sadece işlem başarısızsa loading'i durdur, başarılıysa yönlendirme beklenir
         if (!result.success) setIsLoading(false);
       }
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : String(error);
-
-      if (message.includes("NEXT_REDIRECT")) {
+      const msg = error instanceof Error ? error.message : String(error);
+      // Next.js redirect hatasını yutma, fırlat
+      if (msg.includes("NEXT_REDIRECT")) {
         throw error;
       }
-
-      console.error("Detaylı Hata:", error);
-      setMessage({
-        type: "error",
-        text: "Bir hata oluştu.",
-      });
+      setMessage({ type: "error", text: "Beklenmedik bir hata oluştu." });
       setIsLoading(false);
     }
   };
@@ -51,14 +57,17 @@ export default function AuthForm() {
           {isLogin ? "Tekrar Hoşgeldiniz" : "Hesap Oluşturun"}
         </h2>
         <p className="text-gray-500 text-sm">
-          {isLogin ? "Hesabınıza giriş yapın" : "Yeni bir üyelik başlatın"}
+          {isLogin
+            ? "Hesabınıza giriş yapın"
+            : "Hızlıca yeni bir üyelik başlatın"}
         </p>
       </div>
 
       {/* Mesaj Kutusu */}
-      {message.text && (
+      {message && (
+        // DÜZELTME: 'break-words' yerine 'break-all' kullanıldı (Uzun hataları kırar)
         <div
-          className={`mb-4 p-3 rounded-lg text-sm font-medium break-words ${
+          className={`mb-4 p-3 rounded-lg text-sm font-medium break-all ${
             message.type === "success"
               ? "bg-green-100 text-green-800"
               : "bg-red-100 text-red-800"
@@ -77,7 +86,7 @@ export default function AuthForm() {
             type="email"
             name="email"
             placeholder="ornek@sirket.com"
-            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            className={inputClass}
             required
           />
         </div>
@@ -90,7 +99,7 @@ export default function AuthForm() {
             type="password"
             name="password"
             placeholder="••••••••"
-            className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            className={inputClass}
             required
             minLength={6}
           />
@@ -99,10 +108,10 @@ export default function AuthForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className={`w-full py-3 text-white font-semibold rounded-lg transition duration-200 ${
+          className={`w-full py-3 text-white font-bold rounded-lg transition duration-200 shadow-md ${
             isLoading
               ? "bg-blue-400 cursor-wait"
-              : "bg-blue-600 hover:bg-blue-700"
+              : "bg-blue-600 hover:bg-blue-700 hover:-translate-y-0.5"
           }`}
         >
           {isLoading
@@ -121,9 +130,9 @@ export default function AuthForm() {
           type="button"
           onClick={() => {
             setIsLogin(!isLogin);
-            setMessage({ type: "", text: "" });
+            setMessage(null);
           }}
-          className="text-blue-600 font-semibold hover:underline"
+          className="text-blue-600 font-bold hover:underline focus:outline-none"
         >
           {isLogin ? "Kayıt Olun" : "Giriş Yapın"}
         </button>

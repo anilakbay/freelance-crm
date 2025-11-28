@@ -1,12 +1,16 @@
-// src/components/forms/InvoiceForm.tsx
+// --------------------------------------------------------
+// BİLEŞEN: Fatura Ekleme Formu (MOBİL UYUMLU)
+// DOSYA: src/components/forms/InvoiceForm.tsx
+// GÖREV: Fatura kaydı oluşturur. Mobilde tek, masaüstünde çift sütun olur.
+// --------------------------------------------------------
+
 "use client";
 
 import { useState, useTransition } from "react";
-import { saveInvoice } from "@/actions/invoice"; // Server Action'ı çağırıyoruz
+import { saveInvoice } from "@/actions/invoice";
 
-// Formun beklediği minimal Client tipi
 interface InvoiceFormProps {
-  clients: { id: number; name: string }[];
+  clients: { id: number; name: string }[] | null;
 }
 
 export default function InvoiceForm({ clients }: InvoiceFormProps) {
@@ -67,7 +71,7 @@ export default function InvoiceForm({ clients }: InvoiceFormProps) {
             <option value="" disabled>
               -- Müşteri Seçiniz --
             </option>
-            {clients.map((client) => (
+            {clients?.map((client) => (
               <option key={client.id} value={client.id}>
                 {client.name}
               </option>
@@ -75,8 +79,8 @@ export default function InvoiceForm({ clients }: InvoiceFormProps) {
           </select>
         </div>
 
-        {/* Tarihler */}
-        <div className="grid grid-cols-2 gap-4">
+        {/* Tarihler - MOBİL AYARI: grid-cols-1 sm:grid-cols-2 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-1.5">
               Fatura Kesim Tarihi
@@ -102,8 +106,8 @@ export default function InvoiceForm({ clients }: InvoiceFormProps) {
           </div>
         </div>
 
-        {/* Tutar ve Durum */}
-        <div className="grid grid-cols-2 gap-4">
+        {/* Tutar ve Durum - MOBİL AYARI: grid-cols-1 sm:grid-cols-2 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-1.5">
               Tutar (₺)

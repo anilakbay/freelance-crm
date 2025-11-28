@@ -9,7 +9,6 @@
 import { useState, useTransition } from "react";
 import { saveTask } from "@/actions/task";
 
-// Formun beklediği veri tipi (Sadece proje id ve başlığı yeterli)
 interface TaskFormProps {
   projects: { id: number; title: string }[];
 }
@@ -29,7 +28,7 @@ export default function TaskForm({ projects }: TaskFormProps) {
 
       if (result.success) {
         setFeedback({ type: "success", text: result.message });
-        (event.target as HTMLFormElement).reset(); // Formu temizle
+        (event.target as HTMLFormElement).reset();
       } else {
         setFeedback({ type: "error", text: result.message });
       }
@@ -37,30 +36,43 @@ export default function TaskForm({ projects }: TaskFormProps) {
   };
 
   const inputClass =
-    "w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-600 focus:border-transparent transition shadow-sm";
+    "w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-600 focus:border-transparent transition shadow-sm font-medium";
 
   return (
     <div className="w-full">
-      {feedback.text && (
-        <div
-          className={`p-4 mb-6 rounded-lg text-sm font-semibold border ${
-            feedback.type === "success"
-              ? "bg-green-50 text-green-700 border-green-200"
-              : "bg-red-50 text-red-700 border-red-200"
-          }`}
-        >
-          {feedback.text}
+      <form onSubmit={handleSubmit} className="space-y-5" method="post">
+        {/* Başlık */}
+        <div className="border-b border-gray-200 pb-4 mb-4">
+          <h2 className="text-2xl font-bold text-gray-900">Yeni Görev Ekle</h2>
+          <p className="text-sm text-gray-500 mt-1">
+            Projeye ait yeni bir görev tanımlayın.
+          </p>
         </div>
-      )}
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Geri Bildirim */}
+        {feedback.text && (
+          <div
+            className={`p-4 rounded-lg text-sm font-semibold border ${
+              feedback.type === "success"
+                ? "bg-green-50 text-green-700 border-green-200"
+                : "bg-red-50 text-red-700 border-red-200"
+            }`}
+          >
+            {feedback.text}
+          </div>
+        )}
+
         {/* Görev Başlığı */}
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-1.5">
+          <label
+            htmlFor="title"
+            className="block text-sm font-bold text-gray-700 mb-1.5"
+          >
             Görev Başlığı
           </label>
           <input
             name="title"
+            id="title"
             type="text"
             required
             className={inputClass}
@@ -68,13 +80,17 @@ export default function TaskForm({ projects }: TaskFormProps) {
           />
         </div>
 
-        {/* Proje Seçimi (Hangi işe ait?) */}
+        {/* Proje Seçimi */}
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-1.5">
+          <label
+            htmlFor="project_id"
+            className="block text-sm font-bold text-gray-700 mb-1.5"
+          >
             Bağlı Olduğu Proje
           </label>
           <select
             name="project_id"
+            id="project_id"
             required
             className={inputClass}
             defaultValue=""
@@ -90,14 +106,18 @@ export default function TaskForm({ projects }: TaskFormProps) {
           </select>
         </div>
 
-        {/* Öncelik ve Tarih */}
+        {/* Öncelik ve Tarih - MOBİL: grid-cols-1 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1.5">
+            <label
+              htmlFor="priority"
+              className="block text-sm font-bold text-gray-700 mb-1.5"
+            >
               Öncelik
             </label>
             <select
               name="priority"
+              id="priority"
               className={inputClass}
               defaultValue="medium"
             >
@@ -107,17 +127,27 @@ export default function TaskForm({ projects }: TaskFormProps) {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1.5">
+            <label
+              htmlFor="due_date"
+              className="block text-sm font-bold text-gray-700 mb-1.5"
+            >
               Son Tarih
             </label>
-            <input name="due_date" type="date" className={inputClass} />
+            <input
+              name="due_date"
+              id="due_date"
+              type="date"
+              className={inputClass}
+            />
           </div>
         </div>
 
         <button
           type="submit"
           disabled={isPending}
-          className="w-full py-3.5 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition disabled:opacity-50 shadow-md mt-2"
+          className={`w-full py-3.5 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition disabled:opacity-50 shadow-md mt-2 ${
+            isPending ? "cursor-not-allowed bg-blue-400" : ""
+          }`}
         >
           {isPending ? "Kaydediliyor..." : "Görevi Ekle"}
         </button>

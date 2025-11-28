@@ -1,3 +1,8 @@
+// --------------------------------------------------------
+// BİLEŞEN: Müşteri Ekleme Formu
+// DOSYA: src/components/forms/ClientForm.tsx
+// --------------------------------------------------------
+
 "use client";
 
 import { useState, useTransition } from "react";
@@ -9,29 +14,31 @@ export default function ClientForm() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setFeedback({ type: "", text: "" });
+    setFeedback({ type: "", text: "" }); // Önceki mesajı temizle
 
-    const formElement = event.currentTarget;
-    const formData = new FormData(formElement);
+    const formData = new FormData(event.currentTarget);
 
+    // Server Action'ı transition içinde çağırarak UI'ın donmasını engelliyoruz
     startTransition(async () => {
       const result = await saveClient(formData);
 
       if (result.success) {
         setFeedback({ type: "success", text: result.message });
-        formElement.reset();
+        (event.target as HTMLFormElement).reset(); // Formu sıfırla
       } else {
         setFeedback({ type: "error", text: result.message });
       }
     });
   };
 
+  // Ortak input stilleri (DRY Prensibi)
   const inputClass =
-    "w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder:text-gray-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent transition shadow-sm font-medium";
+    "w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-600 focus:border-transparent transition shadow-sm font-medium";
 
   return (
-    <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-200 max-w-lg mx-auto">
+    <div className="w-full">
       <form className="space-y-6" onSubmit={handleSubmit} method="post">
+        {/* Başlık Alanı */}
         <div className="border-b border-gray-200 pb-4 mb-4">
           <h2 className="text-2xl font-bold text-gray-900">
             Yeni Müşteri Kaydı
@@ -41,6 +48,7 @@ export default function ClientForm() {
           </p>
         </div>
 
+        {/* Geri Bildirim Mesajı (Success/Error) */}
         {feedback.text && (
           <div
             className={`p-4 rounded-lg text-sm font-semibold border ${
@@ -53,6 +61,7 @@ export default function ClientForm() {
           </div>
         )}
 
+        {/* Ad Soyad */}
         <div>
           <label
             htmlFor="name"
@@ -70,6 +79,7 @@ export default function ClientForm() {
           />
         </div>
 
+        {/* E-posta */}
         <div>
           <label
             htmlFor="email"
@@ -86,7 +96,8 @@ export default function ClientForm() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        {/* Mobil Uyumlu Grid: Telefonda tek, PC'de çift sütun */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label
               htmlFor="phone"
@@ -122,6 +133,7 @@ export default function ClientForm() {
           </div>
         </div>
 
+        {/* Kaydet Butonu */}
         <button
           type="submit"
           disabled={isPending}

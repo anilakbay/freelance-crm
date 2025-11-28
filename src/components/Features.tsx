@@ -1,4 +1,3 @@
-// src/components/Features.tsx
 import React from "react";
 
 const featureItems = [
@@ -90,10 +89,9 @@ const featureItems = [
 
 export default function Features() {
   return (
-    // ID="features" BURAYA EKLENDİ (Navbar linki buraya kayacak)
-    // scroll-mt-24: Menü yüksekliği kadar yukarıdan boşluk bırakır
     <section id="features" className="py-20 bg-white w-full scroll-mt-24">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        {/* Başlık Alanı */}
         <div className="text-center mb-16">
           <h2 className="text-base font-semibold text-blue-600 tracking-wide uppercase">
             Özellikler
@@ -107,11 +105,7 @@ export default function Features() {
           </p>
         </div>
 
-        {/* MOBİL AYARI BURADA YAPILDI:
-            grid-cols-1    -> Mobilde tek sütun
-            sm:grid-cols-2 -> Tablette çift sütun
-            lg:grid-cols-4 -> Bilgisayarda dört sütun
-        */}
+        {/* Özellik Kartları (Grid) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {featureItems.map((feature, index) => (
             <div

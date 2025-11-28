@@ -1,5 +1,5 @@
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar"; // Şimdi oluşturacağız!
 
 export default function MarketingLayout({
   children,
@@ -7,12 +7,11 @@ export default function MarketingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Navbar'ı şimdi ekliyoruz */}
+    <div className="flex flex-col min-h-screen bg-white">
       <Navbar />
 
-      {/* flex-grow yerine grow yazdık, daha modern */}
-      <main className="grow">{children}</main>
+      {/* w-full: İçeriğin her zaman ekran genişliğini doldurmasını garanti eder */}
+      <main className="grow w-full">{children}</main>
 
       <Footer />
     </div>

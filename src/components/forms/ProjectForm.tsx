@@ -1,12 +1,16 @@
+// --------------------------------------------------------
+// BİLEŞEN: Proje Ekleme/Düzenleme Formu (MOBİL UYUMLU)
+// DOSYA: src/components/forms/ProjectForm.tsx
+// --------------------------------------------------------
+
 "use client";
 
 import { useState, useTransition } from "react";
 import { saveProject } from "@/actions/project";
 import { Project } from "@/types/project";
-import { Client } from "@/types/client";
 
 interface ProjectFormProps {
-  clients: { id: number; name: string }[]; // Sadece id ve isim yeterli diyoruz
+  clients: { id: number; name: string }[];
   initialData?: Project & { deadline: string | null };
   isEditing?: boolean;
 }
@@ -18,14 +22,12 @@ export default function ProjectForm({
 }: ProjectFormProps) {
   const [isPending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState({ type: "", text: "" });
-  const clientId = initialData?.client_id;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFeedback({ type: "", text: "" });
 
-    const formElement = event.currentTarget;
-    const formData = new FormData(formElement);
+    const formData = new FormData(event.currentTarget);
 
     if (isEditing && initialData?.id) {
       formData.append("projectId", initialData.id.toString());
@@ -37,7 +39,7 @@ export default function ProjectForm({
       if (result.success) {
         setFeedback({ type: "success", text: result.message });
         if (!isEditing) {
-          formElement.reset();
+          (event.target as HTMLFormElement).reset();
         }
       } else {
         setFeedback({ type: "error", text: result.message });
@@ -46,11 +48,12 @@ export default function ProjectForm({
   };
 
   const inputClass =
-    "w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder:text-gray-600 focus:ring-2 focus:ring-blue-600 focus:border-transparent transition shadow-sm font-medium";
+    "w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-600 focus:border-transparent transition shadow-sm font-medium";
 
   return (
-    <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-200 max-w-lg mx-auto">
+    <div className="w-full">
       <form className="space-y-5" onSubmit={handleSubmit} method="post">
+        {/* Başlık */}
         <div className="border-b border-gray-200 pb-4 mb-4">
           <h2 className="text-2xl font-bold text-gray-900">
             {isEditing
@@ -64,6 +67,7 @@ export default function ProjectForm({
           </p>
         </div>
 
+        {/* Geri Bildirim */}
         {feedback.text && (
           <div
             className={`p-4 rounded-lg text-sm font-semibold border ${
@@ -76,6 +80,7 @@ export default function ProjectForm({
           </div>
         )}
 
+        {/* Proje Başlığı */}
         <div>
           <label
             htmlFor="title"
@@ -94,6 +99,7 @@ export default function ProjectForm({
           />
         </div>
 
+        {/* Müşteri Seçimi */}
         <div>
           <label
             htmlFor="client_id"
@@ -105,7 +111,7 @@ export default function ProjectForm({
             id="client_id"
             name="client_id"
             required
-            defaultValue={clientId || ""}
+            defaultValue={initialData?.client_id || ""}
             className={inputClass}
           >
             <option value="">-- Müşteri Seçiniz --</option>
@@ -117,7 +123,8 @@ export default function ProjectForm({
           </select>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        {/* Bütçe ve Tarih - MOBİL AYARI: grid-cols-1 sm:grid-cols-2 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label
               htmlFor="price"
@@ -151,6 +158,7 @@ export default function ProjectForm({
           </div>
         </div>
 
+        {/* Proje Durumu */}
         <div>
           <label
             htmlFor="status"
@@ -171,13 +179,14 @@ export default function ProjectForm({
           </select>
         </div>
 
+        {/* Buton */}
         <button
           type="submit"
           disabled={isPending}
           className={`w-full py-3.5 text-white font-bold rounded-lg transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 ${
             isPending
               ? "bg-gray-400 cursor-not-allowed"
-              : "bg-green-600 hover:bg-green-700"
+              : "bg-blue-600 hover:bg-blue-700" // Renk maviye döndü (Yeşil fatura içindi)
           }`}
         >
           {isPending

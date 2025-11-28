@@ -12,16 +12,16 @@ import { createSupabaseServerClient } from "@/lib/supabase";
 export default async function NewProjectPage() {
   const supabase = await createSupabaseServerClient();
 
-  // 1. Oturum Kontrolü
+  // 1. Güvenli Oturum Kontrolü (getUser ile)
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (!user) {
     redirect("/auth");
   }
 
-  // 2. Müşterileri Çek (Formda "Hangi Müşteri?" seçimi için şart)
+  // 2. Müşterileri Çek
   const { data: clients, error } = await supabase
     .from("clients")
     .select("id, name")
@@ -29,15 +29,16 @@ export default async function NewProjectPage() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-64 text-red-600">
-        Hata: Müşteri listesi yüklenemedi.
+      <div className="p-10 text-red-600 bg-red-50 rounded-lg m-6 border border-red-100">
+        <p className="font-bold">Veri Çekme Hatası</p>
+        <p className="text-sm">Müşteri listesi yüklenemedi: {error.message}</p>
       </div>
     );
   }
 
   return (
     <div className="max-w-2xl mx-auto py-8">
-      {/* Başlık ve Geri Dön Butonu */}
+      {/* Başlık ve Geri Dön Linki */}
       <div className="mb-6">
         <Link
           href="/projects"
@@ -57,7 +58,7 @@ export default async function NewProjectPage() {
             <path d="M19 12H5" />
             <path d="m12 19-7-7 7-7" />
           </svg>
-          Listeye Geri Dön
+          Projelere Dön
         </Link>
         <h1 className="text-2xl font-bold text-gray-900">Yeni Proje Oluştur</h1>
         <p className="text-sm text-gray-500 mt-1">
@@ -67,11 +68,7 @@ export default async function NewProjectPage() {
 
       {/* Form Bileşeni */}
       <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-        <ProjectForm
-          clients={clients || []}
-          // initialData göndermiyoruz, çünkü bu yeni bir kayıt.
-          // isEditing göndermiyoruz (varsayılan false), çünkü düzenleme yapmıyoruz.
-        />
+        <ProjectForm clients={clients || []} />
       </div>
     </div>
   );

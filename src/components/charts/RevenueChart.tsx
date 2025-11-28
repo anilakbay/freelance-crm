@@ -1,85 +1,92 @@
 // --------------------------------------------------------
-// BİLEŞEN: Aylık Gelir Grafiği (Bar Chart) - FİNAL
-// DOSYA: src/components/charts/RevenueChart.tsx
+// BİLEŞEN: Proje Durum Grafiği (Pie Chart) - FİNAL
+// DOSYA: src/components/charts/StatusChart.tsx
 // --------------------------------------------------------
 
 "use client";
 
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
+  PieChart,
+  Pie,
+  Cell,
   ResponsiveContainer,
+  Legend,
+  Tooltip,
 } from "recharts";
 
-// 1. Grafiğin beklediği veri tipi
-interface ChartData {
-  month: string;
-  total: number;
+// Recharts uyumluluğu için esnek tip tanımı
+interface StatusData {
+  name: string;
+  value: number;
+  [key: string]: any;
 }
 
-// 2. Bileşenin aldığı prop'lar (data'yı zorunlu kılıyoruz)
-export default function RevenueChart({ data }: { data: ChartData[] }) {
-  // Veri boşsa veya null ise hata vermesin, boş dizi kullansın
-  const chartData = data || [];
+const STATUS_COLORS: Record<string, string> = {
+  Aktif: "#3B82F6", // Mavi
+  Tamamlandı: "#10B981", // Yeşil
+  Beklemede: "#F59E0B", // Sarı
+  İptal: "#EF4444", // Kırmızı
+};
+
+export default function StatusChart({ data }: { data: StatusData[] }) {
+  // Eğer veri gelmezse veya boşsa kullanıcıya bilgi ver
+  if (!data || data.length === 0) {
+    return (
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 h-[300px] flex items-center justify-center text-gray-500">
+        Henüz proje verisi yok.
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 h-[300px]">
-      <h2 className="text-lg font-bold text-gray-900 mb-4">
-        Aylık Gelir Analizi
-      </h2>
+    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 h-[300px] flex flex-col">
+      <h2 className="text-lg font-bold text-gray-900 mb-2">Proje Durumları</h2>
 
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          data={chartData}
-          margin={{ top: 5, right: 5, left: -20, bottom: 0 }}
-        >
-          <CartesianGrid
-            strokeDasharray="3 3"
-            vertical={false}
-            stroke="#E5E7EB"
-          />
+      <div className="flex-1 min-h-0">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              innerRadius={50}
+              outerRadius={70}
+              paddingAngle={5}
+              dataKey="value"
+            >
+              {/* Her dilim için ismine uygun rengi seç */}
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={STATUS_COLORS[entry.name] || "#A1A1AA"} // Bilinmeyen durumlar için gri
+                  strokeWidth={0}
+                />
+              ))}
+            </Pie>
 
-          <XAxis
-            dataKey="month"
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: "#6B7280", fontSize: 12 }}
-            dy={10}
-          />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#fff",
+                borderRadius: "8px",
+                border: "1px solid #E5E7EB",
+                boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+              }}
+              itemStyle={{ color: "#374151" }}
+              formatter={(value: number, name: string) => [
+                `${value} Proje`,
+                name,
+              ]}
+            />
 
-          <YAxis
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: "#6B7280", fontSize: 12 }}
-            tickFormatter={(value) => `₺${value / 1000}k`}
-          />
-
-          <Tooltip
-            cursor={{ fill: "#F3F4F6" }}
-            contentStyle={{
-              backgroundColor: "#fff",
-              borderRadius: "8px",
-              border: "1px solid #E5E7EB",
-              boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-            }}
-            formatter={(value: number) => [
-              `${value.toLocaleString("tr-TR")} ₺`,
-              "Kazanç",
-            ]}
-          />
-
-          <Bar
-            dataKey="total"
-            fill="#3B82F6"
-            radius={[4, 4, 0, 0]}
-            barSize={30}
-          />
-        </BarChart>
-      </ResponsiveContainer>
+            <Legend
+              verticalAlign="bottom"
+              height={36}
+              iconType="circle"
+              iconSize={10}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

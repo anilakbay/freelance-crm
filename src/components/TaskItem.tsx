@@ -1,15 +1,13 @@
 // --------------------------------------------------------
-// BİLEŞEN: Görev Satırı (Task Item)
+// BİLEŞEN: Görev Satırı
 // DOSYA: src/components/TaskItem.tsx
-// GÖREV: Listede tek bir görevi gösterir ve tamamlandı/beklemede durumunu değiştirir.
 // --------------------------------------------------------
 
-"use client"; // Tıklama özelliği olduğu için Client Component olmak ZORUNDA
+"use client";
 
 import { useTransition } from "react";
 import { toggleTaskStatus } from "@/actions/task";
 
-// Bileşenin beklediği veri tipi
 interface TaskItemProps {
   task: {
     id: number;
@@ -24,7 +22,6 @@ interface TaskItemProps {
 export default function TaskItem({ task }: TaskItemProps) {
   const [isPending, startTransition] = useTransition();
 
-  // Tıklama işlemi (Server Action'ı tetikler)
   const handleToggle = () => {
     startTransition(async () => {
       await toggleTaskStatus(task.id, task.status);
@@ -33,19 +30,17 @@ export default function TaskItem({ task }: TaskItemProps) {
 
   return (
     <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-blue-300 transition-colors group">
-      {/* SOL Taraf: İkon ve Başlık */}
       <div className="flex items-start gap-4">
-        {/* TIKLANABİLİR YUVARLAK BUTON */}
         <button
           onClick={handleToggle}
           disabled={isPending}
-          className={`mt-1 w-6 h-6 rounded-full border flex items-center justify-center transition-all cursor-pointer ${
+          // DÜZELTME: 'flex-shrink-0' yerine 'shrink-0' kullanıldı.
+          className={`mt-1 w-6 h-6 rounded-full border flex items-center justify-center transition-all cursor-pointer shrink-0 ${
             task.status === "done"
-              ? "bg-green-500 border-green-500 hover:bg-green-600" // Tamamlandıysa Yeşil
-              : "border-gray-300 bg-white hover:border-blue-500" // Bekliyorsa Gri/Beyaz
+              ? "bg-green-500 border-green-500 hover:bg-green-600"
+              : "border-gray-300 bg-white hover:border-blue-500"
           } ${isPending ? "opacity-50 cursor-wait" : ""}`}
         >
-          {/* Eğer tamamlandıysa "Tik" işareti göster */}
           {task.status === "done" && (
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -63,7 +58,6 @@ export default function TaskItem({ task }: TaskItemProps) {
         </button>
 
         <div>
-          {/* Görev Başlığı (Tamamlandıysa üzeri çizik) */}
           <h3
             className={`font-semibold text-gray-900 transition-all ${
               task.status === "done" ? "line-through text-gray-400" : ""
@@ -71,8 +65,6 @@ export default function TaskItem({ task }: TaskItemProps) {
           >
             {task.title}
           </h3>
-
-          {/* Alt Bilgiler (Proje Adı ve Tarih) */}
           <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
             <span className="bg-gray-100 px-2 py-0.5 rounded text-gray-600 font-medium">
               {task.projects?.title || "Projesiz"}
@@ -80,7 +72,6 @@ export default function TaskItem({ task }: TaskItemProps) {
             {task.due_date && (
               <>
                 <span>•</span>
-                {/* Tarihi Türkçe formatla */}
                 <span>
                   {new Date(task.due_date).toLocaleDateString("tr-TR")}
                 </span>
@@ -90,7 +81,6 @@ export default function TaskItem({ task }: TaskItemProps) {
         </div>
       </div>
 
-      {/* SAĞ Taraf: Öncelik Rozeti */}
       <div className="flex items-center gap-4 self-start sm:self-center ml-10 sm:ml-0">
         <span
           className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${

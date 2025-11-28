@@ -1,12 +1,12 @@
 // --------------------------------------------------------
-// SAYFA: Ana Panel (Dashboard)
-// GÖREV: Veri çekme ve bileşenleri yerleştirme (Mantık utils'de)
+// SAYFA: Ana Panel (Dashboard) - MOBİL UYUMLU FİNAL
+// DOSYA: src/app/(dashboard)/dashboard/page.tsx
 // --------------------------------------------------------
 
 import { createSupabaseServerClient } from "@/lib/supabase";
 import { redirect } from "next/navigation";
 import { getDashboardData } from "@/actions/project";
-// Mantığı buradan çağırıyoruz 👇
+// Mantık fonksiyonlarını utils'den çekiyoruz
 import {
   prepareRevenueData,
   prepareStatusData,
@@ -41,7 +41,7 @@ export default async function DashboardPage() {
   const totalClients = clientsResult.count || 0;
   const tasksData = tasksResult.data || [];
 
-  // 3. HESAPLAMALAR (Basit toplamalar burada kalabilir)
+  // 3. HESAPLAMALAR
   const totalRevenue = projects.reduce(
     (sum, p) => sum + (p.price ? Number(p.price) : 0),
     0
@@ -49,8 +49,7 @@ export default async function DashboardPage() {
   const activeProjects = projects.filter((p) => p.status === "active").length;
   const pendingTasks = tasksData.filter((t) => t.status === "pending").length;
 
-  // 4. GRAFİK VERİSİ (Utils'ten gelen fonksiyonları kullanıyoruz)
-  // Tip dönüşümünü (casting) burada yapıyoruz
+  // 4. GRAFİK VERİSİ (Utils'ten gelen fonksiyonlar)
   const revenueData = prepareRevenueData(
     projects as unknown as DashboardProject[]
   );
@@ -59,9 +58,10 @@ export default async function DashboardPage() {
   );
 
   return (
-    <div className="space-y-6 md:space-y-8 pb-10">
-      {/* Başlık */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+    // Mobilde boşluklar (gap) biraz daha az olabilir
+    <div className="space-y-6 lg:space-y-8 pb-10">
+      {/* --- BAŞLIK ALANI --- */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
             Hoş Geldiniz 👋
@@ -70,6 +70,7 @@ export default async function DashboardPage() {
             İşlerinizin genel durumuna hızlı bir bakış.
           </p>
         </div>
+        {/* Tarih: Mobilde gizle (hidden), tablette göster (sm:block) */}
         <div className="hidden sm:block text-sm text-gray-400 font-medium bg-gray-50 px-3 py-1 rounded-full border border-gray-100">
           {new Date().toLocaleDateString("tr-TR", {
             weekday: "long",
@@ -80,7 +81,8 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* İstatistik Kartları */}
+      {/* --- İSTATİSTİK KARTLARI --- */}
+      {/* Mobilde otomatik alt alta, büyük ekranda yan yana */}
       <StatsCards
         totalRevenue={totalRevenue}
         activeProjects={activeProjects}
@@ -88,8 +90,9 @@ export default async function DashboardPage() {
         pendingTasks={pendingTasks}
       />
 
-      {/* Grafikler */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* --- GRAFİKLER --- */}
+      {/* Mobilde tek sütun (grid-cols-1), Bilgisayarda 3 sütun (lg:grid-cols-3) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         <div className="lg:col-span-2">
           <RevenueChart data={revenueData} />
         </div>
@@ -98,9 +101,10 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Projeler ve Butonlar */}
+      {/* --- PROJELER VE BUTONLAR --- */}
+      {/* Mobilde tek sütun, Bilgisayarda 2 sütun */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-        <RecentProjects projects={projects} />
+        <RecentProjects projects={projects as any[]} />
         <QuickActions />
       </div>
     </div>

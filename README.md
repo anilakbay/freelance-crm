@@ -1,60 +1,60 @@
-## Freelance CRM
+# 🚀 Freelance CRM
 
-Freelance CRM, bağımsız çalışanların müşteri ve proje akışlarını tek ekranda toplamak için geliştirdiğim eğitim amaçlı bir yönetim panelidir. Junior bir geliştirici olarak modern Next.js App Router ve Supabase mimarisini öğrenirken uygulamalı şekilde pekiştirmeyi hedefledim.
+Freelance CRM, bağımsız çalışanların ve küçük işletmelerin iş akışlarını düzene sokmak için geliştirdiğim, modern ve kapsamlı bir yönetim panelidir.
 
-## Öne Çıkanlar
+Müşteri takibinden proje yönetimine, görev listelerinden finansal kayıtlara kadar her şeyi tek bir ekranda toplayarak Excel tabloları arasında kaybolmanızı engeller. **Next.js 16** ve **Supabase** mimarisi üzerine kurulan bu proje, performans ve veri güvenliğini en üst düzeyde tutar.
 
-- Yetkili kullanıcı girişi ve oturum yönetimi
-- Müşteri ekleme, listeleme ve silme
-- Proje oluşturma, durum takibi ve bütçe yönetimi
-- Supabase üzerinde ilişkisel müşteri–proje modeli
-- Tamamı TypeScript ile tip güvenli kod tabanı
+🔗 **Canlı Demo:** https://taskpilotcrm.vercel.app
 
-## Teknolojiler
+![Ana Sayfa](public/img/anasayfa.png)
 
-- Next.js 16 App Router
-- TypeScript ve Server Actions
-- Supabase (PostgreSQL + Auth)
-- Tailwind CSS
-- pnpm
+---
 
-## Görseller
+## ✨ Neler Yapabilirsiniz?
 
-![Ana Sayfa](./public/img/anasayfa.png)
-![Admin Yönetim Paneli](./public/img/yonetim_paneli.png)
-![Müşteri Listesi](./public/img/musteriler.png)
-![Yeni Müşteri Kaydı](./public/img/musteri_kayit.png)
-![Projeler](./public/img/projeler.png)
-![Görevler](./public/img/gorevler.png)
-![Finans](./public/img/finans.png)
-![Ayarlar](./public/img/ayarlar.png)
+Sıradan bir veri giriş uygulamasının ötesinde, işinizi gerçekten yönetmenizi sağlayan özellikler:
 
-## Kurulum
+- **📊 Canlı Dashboard:** Aylık geliriniz ve proje durumlarınız anlık olarak hesaplanır ve interaktif grafiklerle (Recharts) sunulur.
+- **🛡️ Üst Düzey Güvenlik:** Her kullanıcının verisi **Row Level Security (RLS)** ile veritabanı seviyesinde izole edilmiştir. Kimse başkasının verisini göremez.
+- **📱 Her Yerde Sizinle:** Mobil öncelikli (Mobile-First) tasarım sayesinde telefonunuzdan da bilgisayarınızdan da aynı konforla çalışırsınız.
+- **✅ Akıllı Görev Yönetimi:** Projelerinize özel görevler ekleyin, tek tıkla tamamlayın ve ilerlemenizi takip edin.
+- **💰 Finansal Takip:** Faturalarınızı kesin, bekleyen ödemelerinizi görün ve toplam cironuzu analiz edin.
+- **⚡ Modern Altyapı:** API karmaşası olmadan, **Server Actions** ile doğrudan ve hızlı veri yönetimi.
+
+---
+
+## 🛠️ Kullandığım Teknolojiler
+
+Proje, endüstri standardı en güncel teknolojilerle inşa edildi:
+
+- **Framework:** [Next.js 16](https://nextjs.org/) (App Router & Server Components)
+- **Dil:** [TypeScript](https://www.typescriptlang.org/) (Tip güvenliği için)
+- **Veritabanı & Auth:** [Supabase](https://supabase.com/) (PostgreSQL)
+- **Stil:** [Tailwind CSS](https://tailwindcss.com/) (v4 Standartları)
+- **Grafik:** [Recharts](https://recharts.org/)
+- **Paket Yöneticisi:** pnpm
+
+---
+
+## 📸 Uygulama Görüntüleri
+
+|                 Yönetim Paneli                 |               Projeler               |
+| :--------------------------------------------: | :----------------------------------: |
+| ![Admin Paneli](public/img/yonetim_paneli.png) | ![Projeler](public/img/projeler.png) |
+
+|          Finans Takibi           |          Ayarlar & Mobil           |
+| :------------------------------: | :--------------------------------: |
+| ![Finans](public/img/finans.png) | ![Ayarlar](public/img/ayarlar.png) |
+
+---
+
+## 🚀 Kurulum ve Çalıştırma
+
+Projeyi kendi bilgisayarınızda çalıştırmak için şu adımları izleyin:
+
+**1. Projeyi Klonlayın**
 
 ```bash
-git clone https://github.com/KULLANICI_ADINIZ/freelance-crm.git
+git clone [https://github.com/anilakbay/freelance-crm.git](https://github.com/anilakbay/freelance-crm.git)
 cd freelance-crm
-pnpm install
 ```
-
-### Ortam Değişkenleri
-
-1. `env.example` dosyasını kopyalayıp `.env.local` olarak kaydedin.
-2. Supabase projenizdeki `NEXT_PUBLIC_SUPABASE_URL` ve `NEXT_PUBLIC_SUPABASE_ANON_KEY` değerlerini girin.
-3. Yalnızca yönetim senaryolarında ihtiyaç varsa `SUPABASE_SERVICE_ROLE_KEY` ekleyin.
-
-### Geliştirme
-
-```bash
-pnpm dev
-```
-
-Varsayılan olarak `http://localhost:4000` adresinde yayınlanır.
-
-## Proje Yapısı
-
-- `src/app`: Rotalar, sayfa bileşenleri, layout ve stil dosyaları
-- `src/actions`: Server Action fonksiyonları ve veri iş kuralları
-- `src/components`: Form ve paylaşılmış arayüz bileşenleri
-- `src/lib`: Supabase istemcileri ve yardımcılar
-- `src/types`: Supabase veritabanı tipleri ve arayüzler
