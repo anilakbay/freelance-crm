@@ -1,16 +1,17 @@
 // --------------------------------------------------------
-// SAYFA: Ana Panel (Dashboard) - MOBİL UYUMLU FİNAL
+// SAYFA: Ana Panel (Dashboard) - TS HATALARSIZ & MOBİL+WEB UYUMLU
 // DOSYA: src/app/(dashboard)/dashboard/page.tsx
 // --------------------------------------------------------
 
 import { createSupabaseServerClient } from "@/lib/supabase";
 import { redirect } from "next/navigation";
 import { getDashboardData } from "@/actions/project";
-// Mantık fonksiyonlarını utils'den çekiyoruz
 import {
   prepareRevenueData,
   prepareStatusData,
   type DashboardProject,
+  type RevenueData,
+  type StatusData,
 } from "@/lib/utils";
 
 // Bileşenler
@@ -23,16 +24,17 @@ import StatusChart from "@/components/charts/StatusChart";
 export default async function DashboardPage() {
   const supabase = await createSupabaseServerClient();
 
-  // 1. GÜVENLİK
+  // 1️⃣ Kullanıcı oturumu kontrol
   const {
     data: { session },
   } = await supabase.auth.getSession();
   if (!session) redirect("/auth");
 
-  // 2. VERİ ÇEKME
+  // 2️⃣ Dashboard verilerini çek
   const { projects } = await getDashboardData();
+  const projectsTyped: DashboardProject[] = projects; // TS tipi garanti
 
-  // Hız için diğer verileri paralel çekiyoruz
+  // 3️⃣ Yardımcı veriler
   const [clientsResult, tasksResult] = await Promise.all([
     supabase.from("clients").select("id", { count: "exact", head: true }),
     supabase.from("tasks").select("id, status"),
@@ -40,27 +42,24 @@ export default async function DashboardPage() {
 
   const totalClients = clientsResult.count || 0;
   const tasksData = tasksResult.data || [];
+  const pendingTasks = tasksData.filter((t) => t.status === "pending").length;
 
-  // 3. HESAPLAMALAR
-  const totalRevenue = projects.reduce(
+  // 4️⃣ Proje istatistikleri
+  const totalRevenue = projectsTyped.reduce(
     (sum, p) => sum + (p.price ? Number(p.price) : 0),
     0
   );
-  const activeProjects = projects.filter((p) => p.status === "active").length;
-  const pendingTasks = tasksData.filter((t) => t.status === "pending").length;
+  const activeProjects = projectsTyped.filter(
+    (p) => p.status === "active"
+  ).length;
 
-  // 4. GRAFİK VERİSİ (Utils'ten gelen fonksiyonlar)
-  const revenueData = prepareRevenueData(
-    projects as unknown as DashboardProject[]
-  );
-  const statusData = prepareStatusData(
-    projects as unknown as DashboardProject[]
-  );
+  // 5️⃣ Grafik verileri
+  const revenueData: RevenueData[] = prepareRevenueData(projectsTyped);
+  const statusData: StatusData[] = prepareStatusData(projectsTyped);
 
   return (
-    // Mobilde boşluklar (gap) biraz daha az olabilir
-    <div className="space-y-6 lg:space-y-8 pb-10">
-      {/* --- BAŞLIK ALANI --- */}
+    <div className="space-y-6 lg:space-y-8 pb-10 px-4 md:px-8 lg:px-12">
+      {/* Başlık */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
@@ -70,7 +69,6 @@ export default async function DashboardPage() {
             İşlerinizin genel durumuna hızlı bir bakış.
           </p>
         </div>
-        {/* Tarih: Mobilde gizle (hidden), tablette göster (sm:block) */}
         <div className="hidden sm:block text-sm text-gray-400 font-medium bg-gray-50 px-3 py-1 rounded-full border border-gray-100">
           {new Date().toLocaleDateString("tr-TR", {
             weekday: "long",
@@ -81,8 +79,7 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* --- İSTATİSTİK KARTLARI --- */}
-      {/* Mobilde otomatik alt alta, büyük ekranda yan yana */}
+      {/* İstatistik Kartları */}
       <StatsCards
         totalRevenue={totalRevenue}
         activeProjects={activeProjects}
@@ -90,8 +87,7 @@ export default async function DashboardPage() {
         pendingTasks={pendingTasks}
       />
 
-      {/* --- GRAFİKLER --- */}
-      {/* Mobilde tek sütun (grid-cols-1), Bilgisayarda 3 sütun (lg:grid-cols-3) */}
+      {/* Grafikler */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         <div className="lg:col-span-2">
           <RevenueChart data={revenueData} />
@@ -101,10 +97,9 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* --- PROJELER VE BUTONLAR --- */}
-      {/* Mobilde tek sütun, Bilgisayarda 2 sütun */}
+      {/* Projeler ve Hızlı İşlemler */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-        <RecentProjects projects={projects as any[]} />
+        <RecentProjects projects={projectsTyped} />
         <QuickActions />
       </div>
     </div>
