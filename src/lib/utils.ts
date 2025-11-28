@@ -1,12 +1,11 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-// Tailwind için standart yardımcı (Varsa kalsın, yoksa ekle)
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// --- DASHBOARD TİP VE HESAPLAMALARI ---
+// --- TİP VE HESAPLAMALAR ---
 
 export interface DashboardProject {
   id: number;
@@ -17,8 +16,13 @@ export interface DashboardProject {
   created_at: string;
 }
 
-// Gelir Hesaplama Mantığı
-export function prepareRevenueData(projects: DashboardProject[]) {
+// 🚨 YENİ EXPORT'LAR: Artık diğer dosyalar bu tipleri çekebilir
+export type RevenueData = { month: string; total: number };
+export type StatusData = { name: string; value: number };
+
+export function prepareRevenueData(
+  projects: DashboardProject[]
+): RevenueData[] {
   const monthlyRevenueMap = new Map<string, number>();
   const monthNames = [
     "Oca",
@@ -53,8 +57,7 @@ export function prepareRevenueData(projects: DashboardProject[]) {
   return Array.from(monthlyRevenueMap, ([month, total]) => ({ month, total }));
 }
 
-// Pasta Grafik Verisi Hazırlama Mantığı
-export function prepareStatusData(projects: DashboardProject[]) {
+export function prepareStatusData(projects: DashboardProject[]): StatusData[] {
   const statusCounts = projects.reduce((acc, project) => {
     const statusTR =
       project.status === "active"
