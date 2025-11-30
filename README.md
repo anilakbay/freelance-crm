@@ -6,7 +6,7 @@
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript)
 
-> **Freelancerlar için modern, hızlı ve kullanıcı dostu bir iş yönetim platformu; projelerini, görevlerini ve finanslarını tek bir yerden kolayca yönet.**
+> **Freelancer olarak işlerinizi düzenlemek, projelerinizi ve görevlerinizi tek bir yerden yönetmek artık çok kolay. TaskPilot CRM ile finanslarınızı, projelerinizi ve günlük iş akışınızı hızlı ve pratik bir şekilde kontrol edebilirsiniz.**
 
 ### 🚀 [Canlı Demo (Live)](https://taskpilotcrm.vercel.app/)
 
@@ -14,21 +14,21 @@
 
 ## 📸 Proje Görselleri
 
-|                                            **Ana Sayfa**                                             |                                       **Yönetim Paneli (Dashboard)**                                       |
-| :--------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------: |
-| ![Ana Sayfa](https://raw.githubusercontent.com/anilakbay/freelance-crm/main/public/img/anasayfa.png) | ![Dashboard](https://raw.githubusercontent.com/anilakbay/freelance-crm/main/public/img/yonetim_paneli.png) |
+|             **Ana Sayfa**             |       **Yönetim Paneli (Dashboard)**        |
+| :-----------------------------------: | :-----------------------------------------: |
+| ![Ana Sayfa](public/img/anasayfa.png) | ![Dashboard](public/img/yonetim_paneli.png) |
 
-|                                            **Projeler**                                             |                                         **Görev Yönetimi**                                          |
-| :-------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------: |
-| ![Projeler](https://raw.githubusercontent.com/anilakbay/freelance-crm/main/public/img/projeler.png) | ![Görevler](https://raw.githubusercontent.com/anilakbay/freelance-crm/main/public/img/gorevler.png) |
+|             **Projeler**             |          **Görev Yönetimi**          |
+| :----------------------------------: | :----------------------------------: |
+| ![Projeler](public/img/projeler.png) | ![Görevler](public/img/gorevler.png) |
 
-|                                           **Müşteri Listesi**                                           |                                            **Yeni Müşteri Kaydı**                                            |
-| :-----------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------: |
-| ![Müşteriler](https://raw.githubusercontent.com/anilakbay/freelance-crm/main/public/img/musteriler.png) | ![Yeni Müşteri](https://raw.githubusercontent.com/anilakbay/freelance-crm/main/public/img/musteri_kayit.png) |
+|           **Müşteri Listesi**            |            **Yeni Müşteri Kaydı**             |
+| :--------------------------------------: | :-------------------------------------------: |
+| ![Müşteriler](public/img/musteriler.png) | ![Yeni Müşteri](public/img/musteri_kayit.png) |
 
-|                                     **Finans & Faturalar**                                      |                                            **Ayarlar**                                            |
-| :---------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------: |
-| ![Finans](https://raw.githubusercontent.com/anilakbay/freelance-crm/main/public/img/finans.png) | ![Ayarlar](https://raw.githubusercontent.com/anilakbay/freelance-crm/main/public/img/ayarlar.png) |
+|      **Finans & Faturalar**      |            **Ayarlar**             |
+| :------------------------------: | :--------------------------------: |
+| ![Finans](public/img/finans.png) | ![Ayarlar](public/img/ayarlar.png) |
 
 ---
 
