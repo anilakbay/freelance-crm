@@ -10,6 +10,24 @@ Modern freelance CRM sistemi. Next.js 16, React 19, TypeScript ve Supabase ile g
 - 💰 **Finans** - Fatura kesme ve takip
 - ✅ **Görevler** - Yapılacaklar listesi
 
+## 📸 Proje Görselleri
+
+|             **Ana Sayfa**             |   **Yönetim Paneli (Dashboard)**   |
+| :-----------------------------------: | :--------------------------------: |
+| ![Ana Sayfa](public/img/anasayfa.png) | ![Dashboard](public/img/admin.png) |
+
+|             **Projeler**             |          **Görev Yönetimi**          |
+| :----------------------------------: | :----------------------------------: |
+| ![Projeler](public/img/projeler.png) | ![Görevler](public/img/gorevler.png) |
+
+|           **Müşteri Listesi**            |            **Yeni Müşteri Kaydı**             |
+| :--------------------------------------: | :-------------------------------------------: |
+| ![Müşteriler](public/img/musteriler.png) | ![Yeni Müşteri](public/img/musteri_kayit.png) |
+
+|      **Finans & Faturalar**      |            **Ayarlar**             |
+| :------------------------------: | :--------------------------------: |
+| ![Finans](public/img/finans.png) | ![Ayarlar](public/img/ayarlar.png) |
+
 ## Kurulum
 
 ```bash
