@@ -1,72 +1,72 @@
-// --------------------------------------------------------
-// BİLEŞEN: Hızlı İşlemler
-// DOSYA: src/components/dashboard/QuickActions.tsx
-// GÖREV: Ana panelden hızlıca proje ve müşteri ekleme butonları.
-// --------------------------------------------------------
-
 import Link from "next/link";
 
 export default function QuickActions() {
+  const actions = [
+    {
+      title: "Yeni Proje",
+      href: "/projects/new",
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+      ),
+      gradient: "from-blue-500 to-indigo-600",
+      hover: "hover:from-blue-600 hover:to-indigo-700",
+    },
+    {
+      title: "Müşteri Ekle",
+      href: "/clients/new",
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+        </svg>
+      ),
+      gradient: "from-purple-500 to-pink-600",
+      hover: "hover:from-purple-600 hover:to-pink-700",
+    },
+    {
+      title: "Fatura Kes",
+      href: "/finance/new",
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      ),
+      gradient: "from-green-500 to-emerald-600",
+      hover: "hover:from-green-600 hover:to-emerald-700",
+    },
+    {
+      title: "Görev Ekle",
+      href: "/tasks/new",
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        </svg>
+      ),
+      gradient: "from-orange-500 to-red-600",
+      hover: "hover:from-orange-600 hover:to-red-700",
+    },
+  ];
+
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 flex flex-col h-full">
-      <h2 className="text-lg font-bold text-gray-900 mb-6">Hızlı İşlemler</h2>
+    <div className="card p-6">
+      <h2 className="text-xl font-bold text-gray-900 mb-6">Hızlı İşlemler</h2>
 
-      <div className="grid grid-cols-2 gap-4 flex-1">
-        {/* --- YENİ PROJE BUTONU --- */}
-        <Link
-          href="/projects/new"
-          className="flex flex-col items-center justify-center p-4 sm:p-6 rounded-xl border border-dashed border-gray-300 bg-gray-50 hover:bg-blue-50 hover:border-blue-400 transition-all group active:scale-95 duration-150"
-        >
-          {/* İkon */}
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mb-3 group-hover:bg-blue-600 group-hover:text-white transition-colors shadow-sm">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-5 h-5 sm:w-6 sm:h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 4.5v15m7.5-7.5h-15"
-              />
-            </svg>
-          </div>
-          {/* Yazı */}
-          <span className="text-xs sm:text-sm font-bold text-gray-700 group-hover:text-blue-700 text-center">
-            Yeni Proje
-          </span>
-        </Link>
-
-        {/* --- MÜŞTERİ EKLE BUTONU --- */}
-        <Link
-          href="/clients/new"
-          className="flex flex-col items-center justify-center p-4 sm:p-6 rounded-xl border border-dashed border-gray-300 bg-gray-50 hover:bg-purple-50 hover:border-purple-400 transition-all group active:scale-95 duration-150"
-        >
-          {/* İkon */}
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mb-3 group-hover:bg-purple-600 group-hover:text-white transition-colors shadow-sm">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-5 h-5 sm:w-6 sm:h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"
-              />
-            </svg>
-          </div>
-          {/* Yazı */}
-          <span className="text-xs sm:text-sm font-bold text-gray-700 group-hover:text-purple-700 text-center">
-            Müşteri Ekle
-          </span>
-        </Link>
+      <div className="grid grid-cols-2 gap-4">
+        {actions.map((action) => (
+          <Link
+            key={action.href}
+            href={action.href}
+            className={`group flex flex-col items-center justify-center p-6 rounded-xl bg-gradient-to-br ${action.gradient} ${action.hover} text-white transition-all duration-200 hover:scale-105 hover:shadow-lg`}
+          >
+            <div className="mb-3">
+              {action.icon}
+            </div>
+            <span className="text-sm font-bold text-center">
+              {action.title}
+            </span>
+          </Link>
+        ))}
       </div>
     </div>
   );

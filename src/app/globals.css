@@ -1,64 +1,105 @@
 @import "tailwindcss";
 
+/* ===================================
+   Global Variables
+   =================================== */
 :root {
-  --brand-color: #4f46e5;
-  --brand-light: #818cf8;
-  --text-primary: #0f172a;
-  --text-secondary: #64748b;
-  --bg-app: #f8fafc;
+  --primary: 59 130 246; /* Blue-500 */
+  --primary-dark: 37 99 235; /* Blue-600 */
+  --success: 34 197 94; /* Green-500 */
+  --danger: 239 68 68; /* Red-500 */
+  --warning: 251 146 60; /* Orange-500 */
+  --gray: 100 116 139; /* Slate-500 */
 }
 
+/* ===================================
+   Base Styles
+   =================================== */
 html {
   scroll-behavior: smooth;
   -webkit-tap-highlight-color: transparent;
+  font-size: 16px;
 }
 
 body {
-  background-color: var(--bg-app);
-  color: var(--text-primary);
+  @apply bg-gray-50 text-gray-900;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   min-height: 100vh;
 }
 
-::selection {
-  background-color: var(--brand-color);
-  color: #ffffff;
+/* ===================================
+   Typography
+   =================================== */
+h1, h2, h3, h4, h5, h6 {
+  @apply font-bold text-gray-900;
+  line-height: 1.2;
 }
 
+h1 {
+  @apply text-3xl lg:text-4xl;
+}
+
+h2 {
+  @apply text-2xl lg:text-3xl;
+}
+
+h3 {
+  @apply text-xl lg:text-2xl;
+}
+
+p {
+  @apply text-base text-gray-700 leading-relaxed;
+}
+
+/* ===================================
+   Selection
+   =================================== */
+::selection {
+  @apply bg-blue-600 text-white;
+}
+
+/* ===================================
+   Scrollbar (Modern)
+   =================================== */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  @apply bg-transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #cbd5e1;
-  border-radius: 10px;
-  transition: background-color 0.3s;
+  @apply bg-gray-300 rounded-full;
+  transition: background-color 0.2s;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #94a3b8;
+  @apply bg-gray-400;
 }
 
+/* ===================================
+   Focus States
+   =================================== */
 :focus-visible {
-  outline: 2px solid var(--brand-color);
-  outline-offset: 2px;
+  @apply outline-2 outline-blue-600 outline-offset-2;
 }
 
-.fade-in {
-  animation: fadeIn 0.5s ease-in-out;
+button:focus-visible,
+a:focus-visible {
+  @apply outline-2 outline-blue-600 outline-offset-2;
 }
 
+/* ===================================
+   Animations
+   =================================== */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(5px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -66,10 +107,20 @@ body {
   }
 }
 
-/* Blob animations for hero section */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 @keyframes blob {
-  0% {
-    transform: translate(0px, 0px) scale(1);
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
   }
   33% {
     transform: translate(30px, -50px) scale(1.1);
@@ -77,9 +128,14 @@ body {
   66% {
     transform: translate(-20px, 20px) scale(0.9);
   }
-  100% {
-    transform: translate(0px, 0px) scale(1);
-  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.5s ease-out;
 }
 
 .animate-blob {
@@ -92,4 +148,74 @@ body {
 
 .animation-delay-4000 {
   animation-delay: 4s;
+}
+
+/* ===================================
+   Utilities
+   =================================== */
+.text-balance {
+  text-wrap: balance;
+}
+
+.glass {
+  @apply bg-white/80 backdrop-blur-md border border-gray-200/50;
+}
+
+.shadow-soft {
+  box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 
+              0 10px 20px -2px rgba(0, 0, 0, 0.04);
+}
+
+/* ===================================
+   Components
+   =================================== */
+.btn {
+  @apply px-4 py-2 rounded-lg font-semibold transition-all duration-200;
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.btn-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700;
+  @apply focus:ring-blue-600;
+}
+
+.btn-secondary {
+  @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+  @apply focus:ring-gray-500;
+}
+
+.btn-danger {
+  @apply bg-red-600 text-white hover:bg-red-700;
+  @apply focus:ring-red-600;
+}
+
+.card {
+  @apply bg-white rounded-xl border border-gray-200 shadow-sm;
+  @apply hover:shadow-md transition-shadow duration-200;
+}
+
+.input {
+  @apply w-full px-4 py-2.5 rounded-lg border border-gray-300;
+  @apply focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20;
+  @apply transition-all duration-200;
+}
+
+.badge {
+  @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold;
+}
+
+.badge-blue {
+  @apply bg-blue-100 text-blue-700;
+}
+
+.badge-green {
+  @apply bg-green-100 text-green-700;
+}
+
+.badge-yellow {
+  @apply bg-yellow-100 text-yellow-700;
+}
+
+.badge-red {
+  @apply bg-red-100 text-red-700;
 }

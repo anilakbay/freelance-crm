@@ -1,5 +1,3 @@
-import React from "react";
-
 interface StatsProps {
   totalRevenue: number;
   activeProjects: number;
@@ -15,132 +13,70 @@ export default function StatsCards({
 }: StatsProps) {
   const stats = [
     {
-      title: "Toplam Ciro",
+      title: "Toplam Gelir",
       value: `${totalRevenue.toLocaleString("tr-TR")} ₺`,
-      change: "Güncel",
       icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6 text-green-600"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       ),
-      bgColor: "bg-green-50",
-      textColor: "text-green-600",
+      gradient: "from-green-500 to-emerald-600",
+      bg: "bg-green-50",
     },
     {
       title: "Aktif Projeler",
       value: activeProjects.toString(),
-      change: "Devam eden",
       icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6 text-blue-600"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"
-          />
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
       ),
-      bgColor: "bg-blue-50",
-      textColor: "text-blue-600",
+      gradient: "from-blue-500 to-indigo-600",
+      bg: "bg-blue-50",
     },
     {
       title: "Toplam Müşteri",
       value: totalClients.toString(),
-      change: "Kayıtlı",
       icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6 text-purple-600"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0z"
-          />
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
         </svg>
       ),
-      bgColor: "bg-purple-50",
-      textColor: "text-purple-600",
+      gradient: "from-purple-500 to-pink-600",
+      bg: "bg-purple-50",
     },
     {
-      title: "Bekleyen İşler",
+      title: "Bekleyen Görevler",
       value: pendingTasks.toString(),
-      change: "Tamamlanmamış",
       icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-6 h-6 text-orange-600"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
         </svg>
       ),
-      bgColor: "bg-orange-50",
-      textColor: "text-orange-600",
+      gradient: "from-orange-500 to-red-600",
+      bg: "bg-orange-50",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {stats.map((item) => (
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {stats.map((stat) => (
         <div
-          key={item.title}
-          className="relative overflow-hidden rounded-xl bg-white p-5 shadow-sm border border-gray-100 hover:border-blue-200 hover:shadow-md transition-all duration-200 group"
+          key={stat.title}
+          className="card p-6 hover:scale-105 transition-transform duration-200"
         >
-          <div className="flex items-center">
-            <div
-              className={`rounded-lg p-3 ${item.bgColor} group-hover:scale-110 transition-transform duration-200`}
-            >
-              {item.icon}
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 mb-1">
+                {stat.title}
+              </p>
+              <p className="text-3xl font-bold text-gray-900">
+                {stat.value}
+              </p>
             </div>
-            <div className="ml-4 w-0 flex-1">
-              <dl>
-                <dt className="truncate text-sm font-medium text-gray-500">
-                  {item.title}
-                </dt>
-                <dd>
-                  <div className="text-lg font-bold text-gray-900">
-                    {item.value}
-                  </div>
-                </dd>
-              </dl>
+            <div className={`p-3 rounded-xl bg-gradient-to-br ${stat.gradient} text-white`}>
+              {stat.icon}
             </div>
-          </div>
-          <div className="mt-4 flex items-center text-xs border-t border-gray-50 pt-3">
-            <span
-              className={`font-bold ${item.textColor} bg-opacity-10 px-2 py-0.5 rounded`}
-            >
-              {item.change}
-            </span>
-            <span className="ml-2 text-gray-400">geçen aya göre</span>
           </div>
         </div>
       ))}

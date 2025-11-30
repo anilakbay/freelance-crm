@@ -3,10 +3,20 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase";
 
-export async function login(formData: FormData) {
+interface AuthResponse {
+  success: boolean;
+  message: string;
+}
+
+export async function login(formData: FormData): Promise<AuthResponse | never> {
   const supabase = await createSupabaseServerClient();
+  
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+
+  if (!email || !password) {
+    return { success: false, message: "E-posta ve şifre gereklidir" };
+  }
 
   const { error } = await supabase.auth.signInWithPassword({
     email,
@@ -17,13 +27,22 @@ export async function login(formData: FormData) {
     return { success: false, message: error.message };
   }
 
-  redirect("/clients");
+  redirect("/dashboard");
 }
 
-export async function signup(formData: FormData) {
+export async function signup(formData: FormData): Promise<AuthResponse> {
   const supabase = await createSupabaseServerClient();
+  
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+
+  if (!email || !password) {
+    return { success: false, message: "E-posta ve şifre gereklidir" };
+  }
+
+  if (password.length < 6) {
+    return { success: false, message: "Şifre en az 6 karakter olmalıdır" };
+  }
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -35,17 +54,16 @@ export async function signup(formData: FormData) {
   }
 
   if (data.session) {
-    redirect("/clients");
+    redirect("/dashboard");
   }
 
   return {
     success: true,
-    message:
-      "Kayıt başarılı! E-posta doğrulamasını tamamladıktan sonra giriş yapabilirsiniz.",
+    message: "Kayıt başarılı! E-posta doğrulamasını tamamlayın.",
   };
 }
 
-export async function logout() {
+export async function logout(): Promise<never> {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut();
   redirect("/auth");

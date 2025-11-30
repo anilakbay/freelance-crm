@@ -2,13 +2,18 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const inter = Inter({ 
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  themeColor: "#2563eb",
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: "#3b82f6",
 };
 
 export const metadata: Metadata = {
@@ -17,9 +22,14 @@ export const metadata: Metadata = {
     template: "%s | TaskPilot CRM",
   },
   description:
-    "Modern ve kullanıcı dostu freelance CRM sistemi. Müşterilerinizi, projelerinizi, görevlerinizi ve faturalarınızı tek platformda yönetin.",
+    "Modern ve kullanıcı dostu freelance CRM sistemi. Müşterilerinizi, projelerinizi ve faturalarınızı tek platformda yönetin.",
   keywords: ["freelance", "crm", "proje yönetimi", "müşteri takibi", "fatura", "iş yönetimi"],
   authors: [{ name: "TaskPilot CRM" }],
+  creator: "TaskPilot CRM",
+  publisher: "TaskPilot CRM",
+  formatDetection: {
+    telephone: false,
+  },
   icons: {
     icon: "/favicon.ico",
   },
@@ -28,13 +38,17 @@ export const metadata: Metadata = {
     locale: "tr_TR",
     url: "https://taskpilotcrm.vercel.app",
     title: "TaskPilot CRM | Freelance İş Yönetimi",
-    description: "Freelancerlar için modern iş yönetim platformu",
+    description: "Modern freelance CRM sistemi",
     siteName: "TaskPilot CRM",
   },
   twitter: {
     card: "summary_large_image",
     title: "TaskPilot CRM",
-    description: "Freelancerlar için modern iş yönetim platformu",
+    description: "Modern freelance CRM sistemi",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
@@ -44,10 +58,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="tr">
-      <body
-        className={`${inter.variable} antialiased bg-gray-50 text-gray-900`}
-      >
+    <html lang="tr" className={inter.variable}>
+      <body className="antialiased">
         {children}
       </body>
     </html>

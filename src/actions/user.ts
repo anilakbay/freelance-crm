@@ -1,45 +1,43 @@
-// src/actions/user.ts
 "use server";
 
-import { createSupabaseServerClient } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
+import { createSupabaseServerClient } from "@/lib/supabase";
 
-export async function updateProfile(formData: FormData) {
+interface ActionResponse {
+  success: boolean;
+  message: string;
+}
+
+export async function updateProfile(formData: FormData): Promise<ActionResponse> {
   const supabase = await createSupabaseServerClient();
 
-  // 1. GÜVENLİK: Oturum Kontrolü (getUser kullanıyoruz, güvenli)
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
 
   if (authError || !user) {
-    return { success: false, message: "Oturum doğrulanamadı." };
+    return { success: false, message: "Oturum doğrulanamadı" };
   }
 
-  // 2. Veriyi Al
   const fullName = (formData.get("name") as string)?.trim();
 
   if (!fullName) {
-    return { success: false, message: "Ad soyad boş bırakılamaz." };
+    return { success: false, message: "Ad soyad boş bırakılamaz" };
   }
 
-  // 3. Supabase Auth Güncelleme
+  if (fullName.length < 2) {
+    return { success: false, message: "Ad soyad en az 2 karakter olmalı" };
+  }
+
   const { error: updateError } = await supabase.auth.updateUser({
     data: {
-      full_name: fullName, // Supabase Auth tablosunda 'full_name' olarak geçer
+      full_name: fullName,
     },
   });
 
   if (updateError) {
-    console.error("Profil Güncelleme Hatası:", updateError);
-    return {
-      success: false,
-      message: "Güncelleme başarısız: " + updateError.message,
-    };
+    console.error("Profile update error:", updateError);
+    return { success: false, message: `Güncelleme başarısız: ${updateError.message}` };
   }
 
-  // 4. Sayfaları Yenile (Anında görünmesi için)
   revalidatePath("/settings");
-  return { success: true, message: "Profil başarıyla güncellendi!" };
+  return { success: true, message: "Profil başarıyla güncellendi" };
 }

@@ -1,65 +1,39 @@
 # TaskPilot CRM
 
-![Next.js](https://img.shields.io/badge/Next.js-16+-black?style=for-the-badge&logo=next.js)
-![React](https://img.shields.io/badge/React-19+-blue?style=for-the-badge&logo=react)
-![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green?style=for-the-badge&logo=supabase)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript)
+Modern freelance CRM sistemi. Next.js 16, React 19, TypeScript ve Supabase ile geliştirilmiştir.
 
-> **Freelancer olarak işlerinizi düzenlemek, projelerinizi ve görevlerinizi tek bir yerden yönetmek artık çok kolay. TaskPilot CRM ile finanslarınızı, projelerinizi ve günlük iş akışınızı hızlı ve pratik bir şekilde kontrol edebilirsiniz.**
+## Özellikler
 
-### 🚀 [Canlı Demo (Live)](https://taskpilotcrm.vercel.app/)
+- 📊 **Dashboard** - Gelir grafikleri ve istatistikler
+- 👥 **Müşteri Yönetimi** - Şirket bilgileri ve iletişim
+- 📁 **Proje Takibi** - Durum ve bütçe yönetimi
+- 💰 **Finans** - Fatura kesme ve takip
+- ✅ **Görevler** - Yapılacaklar listesi
 
----
-
-## 📸 Proje Görselleri
-
-|             **Ana Sayfa**             |       **Yönetim Paneli (Dashboard)**        |
-| :-----------------------------------: | :-----------------------------------------: |
-| ![Ana Sayfa](public/img/anasayfa.png) | ![Dashboard](public/img/yonetim_paneli.png) |
-
-|             **Projeler**             |          **Görev Yönetimi**          |
-| :----------------------------------: | :----------------------------------: |
-| ![Projeler](public/img/projeler.png) | ![Görevler](public/img/gorevler.png) |
-
-|           **Müşteri Listesi**            |            **Yeni Müşteri Kaydı**             |
-| :--------------------------------------: | :-------------------------------------------: |
-| ![Müşteriler](public/img/musteriler.png) | ![Yeni Müşteri](public/img/musteri_kayit.png) |
-
-|      **Finans & Faturalar**      |            **Ayarlar**             |
-| :------------------------------: | :--------------------------------: |
-| ![Finans](public/img/finans.png) | ![Ayarlar](public/img/ayarlar.png) |
-
----
-
-## ✨ Özellikler
-
-- **📊 Dashboard:** Gelir grafikleri, aktif işler ve özet istatistikler.
-- **👥 Müşteri Yönetimi:** Detaylı profil, iletişim bilgileri ve geçmiş kayıtlar.
-- **📁 Proje Takibi:** Görsel kartlar, durum yönetimi ve deadline takibi.
-- **✅ Görevler:** Önceliklendirilmiş yapılacaklar listesi.
-- **💰 Finans:** Fatura kesme, tahsilat takibi ve raporlama.
-
----
-
-## 🛠️ Kurulum
+## Kurulum
 
 ```bash
-# 1️⃣ Projeyi Klonla
-git clone https://github.com/anilakbay/freelance-crm.git
+# Proje kurulumu
+git clone <repo-url>
 cd freelance-crm
-
-# 2️⃣ Paketleri Yükle
 pnpm install
 
-# 3️⃣ Env Dosyasını Oluştur (.env.local)
-NEXT_PUBLIC_SUPABASE_URL=your_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+# Environment variables
+cp .env.example .env.local
+# .env.local dosyasını Supabase bilgileriyle doldurun
 
-# 4️⃣ Uygulamayı Başlat
+# Geliştirme
 pnpm dev
+```
 
--- Clients (Müşteriler)
+## Supabase Kurulumu
+
+1. [Supabase](https://supabase.com) hesabı oluşturun
+2. Yeni proje oluşturun
+3. SQL Editor'de aşağıdaki kodu çalıştırın:
+
+```sql
+-- Tabloları oluştur
 CREATE TABLE clients (
   id BIGSERIAL PRIMARY KEY,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -67,63 +41,67 @@ CREATE TABLE clients (
   email TEXT,
   phone TEXT,
   company TEXT,
-  status TEXT NOT NULL DEFAULT 'active',
+  status TEXT DEFAULT 'active',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Projects (Projeler)
 CREATE TABLE projects (
   id BIGSERIAL PRIMARY KEY,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  client_id BIGINT NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+  client_id BIGINT REFERENCES clients(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
-  price NUMERIC(10,2),
+  price NUMERIC(10, 2),
   deadline DATE,
-  status TEXT NOT NULL DEFAULT 'active',
+  status TEXT DEFAULT 'active',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Tasks (Görevler)
 CREATE TABLE tasks (
   id BIGSERIAL PRIMARY KEY,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  project_id BIGINT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  project_id BIGINT REFERENCES projects(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
-  status TEXT NOT NULL DEFAULT 'pending',
-  priority TEXT NOT NULL DEFAULT 'medium',
+  status TEXT DEFAULT 'pending',
+  priority TEXT DEFAULT 'medium',
   due_date DATE,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Invoices (Faturalar)
 CREATE TABLE invoices (
   id BIGSERIAL PRIMARY KEY,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  client_id BIGINT NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+  client_id BIGINT REFERENCES clients(id) ON DELETE CASCADE,
   invoice_date DATE NOT NULL,
   due_date DATE NOT NULL,
-  amount NUMERIC(10,2) NOT NULL,
-  status TEXT NOT NULL DEFAULT 'pending',
+  amount NUMERIC(10, 2) NOT NULL,
+  status TEXT DEFAULT 'pending',
   description TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- RLS Güvenlik Ayarları
+-- RLS aktif et
 ALTER TABLE clients ENABLE ROW LEVEL SECURITY;
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "users_own_data" ON clients FOR ALL USING (auth.uid() = user_id);
-CREATE POLICY "users_own_data" ON projects FOR ALL USING (auth.uid() = user_id);
-CREATE POLICY "users_own_data" ON tasks FOR ALL USING (auth.uid() = user_id);
-CREATE POLICY "users_own_data" ON invoices FOR ALL USING (auth.uid() = user_id);
-
-🚀 Deploy (Canlıya Alma)
-
-GitHub’a pushlayın.
-
-Vercel üzerinde yeni proje oluşturun.
-
-.env değişkenlerini girin ve deploy edin.
+-- Politikalar
+CREATE POLICY "own_data" ON clients FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "own_data" ON projects FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "own_data" ON tasks FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "own_data" ON invoices FOR ALL USING (auth.uid() = user_id);
 ```
+
+4. Settings > API'den URL ve Key'i alıp `.env.local`'e ekleyin
+
+## Teknolojiler
+
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- Supabase
+
+## Lisans
+
+MIT

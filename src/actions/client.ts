@@ -1,10 +1,3 @@
-// --------------------------------------------------------
-// SERVER ACTION: Müşteri İşlemleri
-// DOSYA: src/actions/client.ts
-// GÖREV: Supabase veritabanında müşteri ekleme ve silme işlemlerini yapar.
-// GÜVENLİK: Her işlemde oturum kontrolü yapar.
-// --------------------------------------------------------
-
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -13,31 +6,32 @@ import type { Database } from "@/types/database";
 
 type ClientStatus = Database["public"]["Tables"]["clients"]["Insert"]["status"];
 
-export async function saveClient(formData: FormData) {
+interface ActionResponse {
+  success: boolean;
+  message: string;
+}
+
+export async function saveClient(formData: FormData): Promise<ActionResponse> {
   const supabase = await createSupabaseServerClient();
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  const { data: { session } } = await supabase.auth.getSession();
 
   if (!session) {
-    return { success: false, message: "İşlem yapmak için giriş yapmalısınız." };
+    return { success: false, message: "Oturum gerekli" };
   }
 
-  const name = formData.get("name") as string;
-  const email = formData.get("email") as string;
-  const phone = formData.get("phone") as string;
-  const company = formData.get("company") as string;
+  const name = (formData.get("name") as string)?.trim();
+  const email = (formData.get("email") as string)?.trim();
+  const phone = (formData.get("phone") as string)?.trim();
+  const company = (formData.get("company") as string)?.trim();
   const statusValue = formData.get("status");
 
-  if (
-    !statusValue ||
-    !["active", "passive", "pending"].includes(statusValue as string)
-  ) {
-    return {
-      success: false,
-      message: "Geçersiz müşteri durumu seçildi.",
-    };
+  if (!name) {
+    return { success: false, message: "Müşteri adı zorunludur" };
+  }
+
+  if (!statusValue || !["active", "passive", "pending"].includes(statusValue as string)) {
+    return { success: false, message: "Geçersiz durum" };
   }
 
   const status = statusValue as ClientStatus;
@@ -52,30 +46,26 @@ export async function saveClient(formData: FormData) {
   });
 
   if (error) {
-    console.error("Supabase Kayıt Hatası:", error.message);
-    return { success: false, message: "Kayıt başarısız: " + error.message };
+    console.error("Client insert error:", error);
+    return { success: false, message: `Kayıt başarısız: ${error.message}` };
   }
 
   revalidatePath("/clients");
-
-  return { success: true, message: "Müşteri başarıyla kaydedildi." };
+  return { success: true, message: "Müşteri başarıyla kaydedildi" };
 }
 
-export async function deleteClient(formData: FormData) {
+export async function deleteClient(formData: FormData): Promise<void> {
   const supabase = await createSupabaseServerClient();
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
+  
+  const { data: { session } } = await supabase.auth.getSession();
   if (!session) return;
 
   const idValue = formData.get("id");
   if (!idValue) return;
 
   const id = Number(idValue);
-  if (Number.isNaN(id)) {
-    console.error("Geçersiz ID değeri:", idValue);
+  if (isNaN(id)) {
+    console.error("Invalid client ID:", idValue);
     return;
   }
 
@@ -86,7 +76,7 @@ export async function deleteClient(formData: FormData) {
     .eq("user_id", session.user.id);
 
   if (error) {
-    console.error("Silme Hatası:", error);
+    console.error("Client delete error:", error);
     return;
   }
 
