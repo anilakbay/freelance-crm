@@ -7,20 +7,22 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase";
 
-interface InvoiceWithClient {
+// Veri tipini tam tanımlıyoruz
+interface InvoiceDetail {
   id: number;
   invoice_date: string;
   due_date: string;
   amount: number;
   status: "pending" | "paid" | "overdue";
   description: string | null;
-  clients: { 
+  created_at: string;
+  // Supabase ilişkisel sorgusundan 'clients' tekil obje olarak döner
+  clients: {
     name: string;
     email: string | null;
     phone: string | null;
     company: string | null;
   } | null;
-  created_at: string;
 }
 
 interface PageProps {
@@ -28,36 +30,48 @@ interface PageProps {
 }
 
 export default async function InvoiceDetailPage({ params }: PageProps) {
+  // 1. DÜZELTME: ID'yi sayıya çeviriyoruz
   const { id } = await params;
+  const invoiceId = Number(id);
+
+  // ID geçerli bir sayı değilse 404 döndür
+  if (isNaN(invoiceId)) {
+    return <div className="p-6 text-center">Geçersiz Fatura ID</div>;
+  }
+
   const supabase = await createSupabaseServerClient();
 
+  // 2. DÜZELTME: getSession yerine getUser (Güvenlik)
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  
-  if (!session) redirect("/auth");
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  // Önce faturayı çek
-  const { data: invoice, error } = await supabase
+  if (!user) redirect("/auth");
+
+  // 3. DÜZELTME: Tek sorguda hem faturayı hem müşteriyi çekiyoruz (JOIN)
+  const { data, error } = await supabase
     .from("invoices")
-    .select("*")
-    .eq("id", id)
-    .eq("user_id", session.user.id)
+    .select(
+      `
+      *,
+      clients (
+        name,
+        email,
+        phone,
+        company
+      )
+    `
+    )
+    .eq("id", invoiceId)
+    .eq("user_id", user.id)
     .single();
 
-  if (error || !invoice) {
+  // TypeScript'e bu verinin bizim interface'imize uyduğunu söylüyoruz
+  const invoiceData = data as unknown as InvoiceDetail;
+
+  if (error || !invoiceData) {
     console.error("Invoice fetch error:", error);
-    
-    // Debug için - console'da görmek için
-    if (error) {
-      console.log("Error details:", {
-        message: error.message,
-        code: error.code,
-        details: error.details,
-        hint: error.hint
-      });
-    }
-    
+
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
         <div className="text-center">
@@ -68,11 +82,6 @@ export default async function InvoiceDetailPage({ params }: PageProps) {
           <p className="text-gray-600 mb-4">
             Aradığınız fatura mevcut değil veya silinmiş olabilir.
           </p>
-          {error && (
-            <p className="text-sm text-red-600 mb-8">
-              Hata: {error.message}
-            </p>
-          )}
           <Link
             href="/finance"
             className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
@@ -98,28 +107,27 @@ export default async function InvoiceDetailPage({ params }: PageProps) {
     );
   }
 
-  // Müşteri bilgisini ayrı çek
-  const { data: client } = await supabase
-    .from("clients")
-    .select("name, email, phone, company")
-    .eq("id", invoice.client_id)
-    .single();
-
-  const invoiceData: InvoiceWithClient = {
-    ...invoice,
-    clients: client || null
-  };
-
   return (
     <div className="space-y-6 pb-20">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
         <div>
-          <Link 
-            href="/finance" 
+          <Link
+            href="/finance"
             className="text-sm text-blue-600 hover:text-blue-800 mb-2 inline-flex items-center gap-1"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-4 h-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+              />
             </svg>
             Faturalara Dön
           </Link>
@@ -133,28 +141,36 @@ export default async function InvoiceDetailPage({ params }: PageProps) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Fatura Bilgileri</h2>
-            
+            <h2 className="text-lg font-bold text-gray-900 mb-4">
+              Fatura Bilgileri
+            </h2>
+
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-gray-500">Fatura Tarihi</p>
                   <p className="text-base font-medium text-gray-900 mt-1">
-                    {new Date(invoiceData.invoice_date).toLocaleDateString("tr-TR", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric"
-                    })}
+                    {new Date(invoiceData.invoice_date).toLocaleDateString(
+                      "tr-TR",
+                      {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      }
+                    )}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Son Ödeme Tarihi</p>
                   <p className="text-base font-medium text-gray-900 mt-1">
-                    {new Date(invoiceData.due_date).toLocaleDateString("tr-TR", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric"
-                    })}
+                    {new Date(invoiceData.due_date).toLocaleDateString(
+                      "tr-TR",
+                      {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      }
+                    )}
                   </p>
                 </div>
               </div>
@@ -164,7 +180,7 @@ export default async function InvoiceDetailPage({ params }: PageProps) {
                 <p className="text-3xl font-bold text-gray-900 mt-1">
                   {Number(invoiceData.amount).toLocaleString("tr-TR", {
                     style: "currency",
-                    currency: "TRY"
+                    currency: "TRY",
                   })}
                 </p>
               </div>
@@ -183,8 +199,10 @@ export default async function InvoiceDetailPage({ params }: PageProps) {
 
         <div className="space-y-6">
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Müşteri Bilgileri</h2>
-            
+            <h2 className="text-lg font-bold text-gray-900 mb-4">
+              Müşteri Bilgileri
+            </h2>
+
             {invoiceData.clients ? (
               <div className="space-y-3">
                 <div>
@@ -193,7 +211,7 @@ export default async function InvoiceDetailPage({ params }: PageProps) {
                     {invoiceData.clients.name}
                   </p>
                 </div>
-                
+
                 {invoiceData.clients.company && (
                   <div>
                     <p className="text-sm text-gray-500">Şirket</p>
@@ -206,7 +224,7 @@ export default async function InvoiceDetailPage({ params }: PageProps) {
                 {invoiceData.clients.email && (
                   <div>
                     <p className="text-sm text-gray-500">E-posta</p>
-                    <a 
+                    <a
                       href={`mailto:${invoiceData.clients.email}`}
                       className="text-base font-medium text-blue-600 hover:text-blue-800 mt-1 inline-block"
                     >
@@ -218,7 +236,7 @@ export default async function InvoiceDetailPage({ params }: PageProps) {
                 {invoiceData.clients.phone && (
                   <div>
                     <p className="text-sm text-gray-500">Telefon</p>
-                    <a 
+                    <a
                       href={`tel:${invoiceData.clients.phone}`}
                       className="text-base font-medium text-blue-600 hover:text-blue-800 mt-1 inline-block"
                     >
@@ -240,7 +258,7 @@ export default async function InvoiceDetailPage({ params }: PageProps) {
                 month: "long",
                 year: "numeric",
                 hour: "2-digit",
-                minute: "2-digit"
+                minute: "2-digit",
               })}
             </p>
           </div>

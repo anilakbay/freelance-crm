@@ -89,7 +89,7 @@ export default async function ClientsPage() {
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold text-lg uppercase shadow-sm">
+                          <div className="h-10 w-10 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold text-lg uppercase shadow-sm">
                             {client.name.charAt(0)}
                           </div>
                           <div className="ml-4">
@@ -131,7 +131,7 @@ export default async function ClientsPage() {
               >
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold text-lg uppercase shadow-sm">
+                    <div className="h-10 w-10 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold text-lg uppercase shadow-sm">
                       {client.name.charAt(0)}
                     </div>
                     <div>
