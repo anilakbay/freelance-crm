@@ -4,24 +4,37 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
-// 1. MOBİL GÖRÜNÜM AYARLARI (Telefonda düzgün ölçeklenmesi için şart)
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#2563eb", // Mobil tarayıcı üst bar rengi (Mavi)
+  themeColor: "#2563eb",
 };
 
-// 2. SEO VE PAYLAŞIM AYARLARI
 export const metadata: Metadata = {
   title: {
-    default: "Freelance CRM | İş Yönetim Paneli",
-    template: "%s | Freelance CRM",
+    default: "TaskPilot CRM | Freelance İş Yönetimi",
+    template: "%s | TaskPilot CRM",
   },
   description:
-    "Freelancerlar için geliştirilmiş basit ve güçlü müşteri takip sistemi.",
+    "Modern ve kullanıcı dostu freelance CRM sistemi. Müşterilerinizi, projelerinizi, görevlerinizi ve faturalarınızı tek platformda yönetin.",
+  keywords: ["freelance", "crm", "proje yönetimi", "müşteri takibi", "fatura", "iş yönetimi"],
+  authors: [{ name: "TaskPilot CRM" }],
   icons: {
     icon: "/favicon.ico",
+  },
+  openGraph: {
+    type: "website",
+    locale: "tr_TR",
+    url: "https://taskpilotcrm.vercel.app",
+    title: "TaskPilot CRM | Freelance İş Yönetimi",
+    description: "Freelancerlar için modern iş yönetim platformu",
+    siteName: "TaskPilot CRM",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TaskPilot CRM",
+    description: "Freelancerlar için modern iş yönetim platformu",
   },
 };
 
@@ -32,9 +45,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr">
-      {/* text-gray-900: Varsayılan yazı rengini koyu gri yaptık (Okunabilirlik)
-        antialiased: Yazıların daha pürüzsüz görünmesini sağlar
-      */}
       <body
         className={`${inter.variable} antialiased bg-gray-50 text-gray-900`}
       >

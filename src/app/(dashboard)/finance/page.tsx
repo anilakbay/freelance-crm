@@ -8,7 +8,6 @@ import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase";
 import { deleteInvoice } from "@/actions/invoice";
 
-// TypeScript için geçici tip tanımı
 interface InvoiceWithClient {
   id: number;
   invoice_date: string;
@@ -47,7 +46,6 @@ export default async function InvoicesPage() {
 
   return (
     <div className="space-y-6 pb-20">
-      {/* --- FİNANSAL ÖZET KARTLARI --- */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
           <p className="text-sm text-gray-500 font-medium">
@@ -79,7 +77,6 @@ export default async function InvoicesPage() {
         </div>
       </div>
 
-      {/* --- BAŞLIK VE BUTON --- */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
         <h1 className="text-2xl font-bold text-gray-900">Faturalar</h1>
         <Link
@@ -90,7 +87,6 @@ export default async function InvoicesPage() {
         </Link>
       </div>
 
-      {/* --- LİSTE ALANI --- */}
       {!hasInvoices ? (
         <div className="bg-white p-12 rounded-xl shadow-sm text-center border border-gray-200">
           <p className="text-gray-500 text-lg">
@@ -105,7 +101,6 @@ export default async function InvoicesPage() {
         </div>
       ) : (
         <>
-          {/* 1. MASAÜSTÜ (TABLO) */}
           <div className="hidden md:block bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
@@ -162,7 +157,7 @@ export default async function InvoicesPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-right">
                         <div className="flex justify-end items-center gap-3">
                           <Link
-                            href={`/invoices/${invoice.id}`}
+                            href={`/finance/${invoice.id}`}
                             className="text-blue-600 hover:text-blue-900 font-medium"
                           >
                             Detay
@@ -177,7 +172,6 @@ export default async function InvoicesPage() {
             </div>
           </div>
 
-          {/* 2. MOBİL (KARTLAR) */}
           <div className="flex flex-col gap-4 md:hidden">
             {invoiceList.map((invoice) => (
               <div
@@ -216,7 +210,7 @@ export default async function InvoicesPage() {
 
                 <div className="flex justify-end items-center gap-4 pt-1">
                   <Link
-                    href={`/invoices/${invoice.id}`}
+                    href={`/finance/${invoice.id}`}
                     className="text-blue-600 hover:text-blue-900 font-medium text-sm"
                   >
                     Detay Görüntüle
@@ -231,8 +225,6 @@ export default async function InvoicesPage() {
     </div>
   );
 }
-
-// --- YARDIMCI BİLEŞENLER ---
 
 function StatusBadge({ status }: { status: string }) {
   return (

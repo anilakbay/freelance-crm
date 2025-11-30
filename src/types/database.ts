@@ -9,7 +9,6 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      // --- MÜŞTERİLER TABLOSU ---
       clients: {
         Row: {
           created_at: string;
@@ -17,6 +16,7 @@ export interface Database {
           id: number;
           name: string;
           phone: string | null;
+          company: string | null;
           status: "active" | "passive" | "pending";
           user_id: string;
         };
@@ -26,6 +26,7 @@ export interface Database {
           id?: number;
           name: string;
           phone?: string | null;
+          company?: string | null;
           status?: "active" | "passive" | "pending";
           user_id?: string;
         };
@@ -35,6 +36,7 @@ export interface Database {
           id?: number;
           name?: string;
           phone?: string | null;
+          company?: string | null;
           status?: "active" | "passive" | "pending";
           user_id?: string;
         };
@@ -48,7 +50,6 @@ export interface Database {
         ];
       };
 
-      // --- PROJELER TABLOSU ---
       projects: {
         Row: {
           client_id: number;
@@ -96,7 +97,6 @@ export interface Database {
         ];
       };
 
-      // --- GÖREVLER TABLOSU ---
       tasks: {
         Row: {
           id: number;
@@ -144,7 +144,6 @@ export interface Database {
         ];
       };
 
-      // --- FATURALAR TABLOSU (DOĞRU YERİNDE) ---
       invoices: {
         Row: {
           id: number;
@@ -154,8 +153,8 @@ export interface Database {
           due_date: string;
           amount: number;
           status: string;
+          description: string | null;
           created_at: string;
-          notes: string | null;
         };
         Insert: {
           client_id: number;
@@ -163,6 +162,7 @@ export interface Database {
           invoice_date: string;
           due_date: string;
           status?: string;
+          description?: string | null;
           user_id?: string;
         };
         Update: {
@@ -172,6 +172,7 @@ export interface Database {
           invoice_date?: string;
           due_date?: string;
           status?: string;
+          description?: string | null;
           user_id?: string;
         };
         Relationships: [

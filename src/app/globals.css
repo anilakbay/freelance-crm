@@ -1,88 +1,56 @@
-/* 1. Tailwind CSS Kurulumu */
-/* Projenin tüm stil altyapısını (flex, grid, renkler vb.) yükler. */
 @import "tailwindcss";
 
-/* ------------------------------------------------ */
-/* 2. GLOBAL DEĞİŞKENLER (Renk Paleti) */
-/* ------------------------------------------------ */
 :root {
-  /* Marka Rengi: İndigo (Güven ve Modernlik) */
   --brand-color: #4f46e5;
   --brand-light: #818cf8;
-
-  /* Metin ve Arka Plan Renkleri */
-  --text-primary: #0f172a; /* Koyu Antrasit (Okunabilirlik için) */
-  --text-secondary: #64748b; /* Gri (Yan bilgiler için) */
-  --bg-app: #f8fafc; /* Soğuk Açık Gri (Göz yormayan zemin) */
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --bg-app: #f8fafc;
 }
 
-/* ------------------------------------------------ */
-/* 3. TEMEL SAYFA AYARLARI */
-/* ------------------------------------------------ */
 html {
-  /* Linklere tıklayınca sayfanın yumuşakça kaymasını sağlar */
   scroll-behavior: smooth;
-  /* Mobilde butonlara tıklayınca çıkan gri gölgeyi kaldırır */
   -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  /* Genel arka plan ve yazı rengi */
   background-color: var(--bg-app);
   color: var(--text-primary);
-
-  /* Yazıların (Fontların) daha keskin ve net görünmesini sağlar */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  /* Yatay taşmayı engeller */
   overflow-x: hidden;
   min-height: 100vh;
 }
 
-/* ------------------------------------------------ */
-/* 4. METİN SEÇİM RENGİ (Highlight) */
-/* ------------------------------------------------ */
-/* Kullanıcı fareyle yazı seçtiğinde standart mavi yerine marka rengimiz çıkar */
 ::selection {
   background-color: var(--brand-color);
   color: #ffffff;
 }
 
-/* ------------------------------------------------ */
-/* 5. MODERN KAYDIRMA ÇUBUĞU (Scrollbar) */
-/* ------------------------------------------------ */
-/* Tarayıcının kalın çubuğunu gizler, ince ve zarif bir çubuk koyar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent; /* Arka planı şeffaf yap */
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #cbd5e1; /* Çubuk rengi (Gri) */
-  border-radius: 10px; /* Yuvarlak köşeler */
+  background-color: #cbd5e1;
+  border-radius: 10px;
   transition: background-color 0.3s;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #94a3b8; /* Üzerine gelince koyulaşır */
+  background-color: #94a3b8;
 }
 
-/* ------------------------------------------------ */
-/* 6. ERİŞİLEBİLİRLİK VE ANİMASYONLAR */
-/* ------------------------------------------------ */
-
-/* Klavye (Tab) ile gezenler için odaklanma çerçevesi */
 :focus-visible {
   outline: 2px solid var(--brand-color);
   outline-offset: 2px;
 }
 
-/* Sayfa yüklenirken içeriğin yumuşakça belirmesi için animasyon */
 .fade-in {
   animation: fadeIn 0.5s ease-in-out;
 }
@@ -96,4 +64,32 @@ body {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Blob animations for hero section */
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
 }

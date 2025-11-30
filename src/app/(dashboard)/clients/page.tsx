@@ -13,13 +13,11 @@ import { Client } from "@/types/client";
 export default async function ClientsPage() {
   const supabase = await createSupabaseServerClient();
 
-  // 1. Oturum Kontrolü
   const {
     data: { session },
   } = await supabase.auth.getSession();
   if (!session) redirect("/auth");
 
-  // 2. Verileri Çek
   const { data, error } = await supabase
     .from("clients")
     .select("*")
@@ -33,7 +31,6 @@ export default async function ClientsPage() {
 
   return (
     <div className="space-y-6 pb-20">
-      {/* --- ÜST BAŞLIK --- */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Müşteri Listesi</h1>
@@ -65,9 +62,6 @@ export default async function ClientsPage() {
         </div>
       ) : (
         <>
-          {/* ============================================== */}
-          {/* 1. MASAÜSTÜ GÖRÜNÜMÜ (TABLO)                  */}
-          {/* ============================================== */}
           <div className="hidden md:block bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
@@ -95,8 +89,7 @@ export default async function ClientsPage() {
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          {/* DÜZELTME: bg-gradient-to-br yerine bg-linear-to-br kullanıldı */}
-                          <div className="h-10 w-10 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold text-lg uppercase shadow-sm">
+                          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold text-lg uppercase shadow-sm">
                             {client.name.charAt(0)}
                           </div>
                           <div className="ml-4">
@@ -130,20 +123,15 @@ export default async function ClientsPage() {
             </div>
           </div>
 
-          {/* ============================================== */}
-          {/* 2. MOBİL GÖRÜNÜMÜ (KARTLAR)                   */}
-          {/* ============================================== */}
           <div className="grid grid-cols-1 gap-4 md:hidden">
             {clients.map((client) => (
               <div
                 key={client.id}
                 className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex flex-col gap-4"
               >
-                {/* Üst Kısım */}
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
-                    {/* DÜZELTME: bg-gradient-to-br yerine bg-linear-to-br kullanıldı */}
-                    <div className="h-10 w-10 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold text-lg uppercase shadow-sm">
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold text-lg uppercase shadow-sm">
                       {client.name.charAt(0)}
                     </div>
                     <div>
@@ -156,7 +144,6 @@ export default async function ClientsPage() {
                   <StatusBadge status={client.status} />
                 </div>
 
-                {/* Orta Kısım */}
                 <div className="bg-gray-50 p-3 rounded-lg text-sm space-y-2 border border-gray-100">
                   <div className="flex items-center gap-2 text-gray-600">
                     <span className="text-xs">📧</span>{" "}
@@ -168,7 +155,6 @@ export default async function ClientsPage() {
                   </div>
                 </div>
 
-                {/* Alt Kısım */}
                 <div className="flex justify-end border-t pt-3 mt-1">
                   <DeleteButton id={client.id} />
                 </div>
@@ -180,8 +166,6 @@ export default async function ClientsPage() {
     </div>
   );
 }
-
-// --- YARDIMCI BİLEŞENLER ---
 
 function StatusBadge({ status }: { status: string }) {
   return (

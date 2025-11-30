@@ -57,7 +57,6 @@ export default function InvoiceForm({ clients }: InvoiceFormProps) {
           Yeni Fatura Kes
         </h2>
 
-        {/* Müşteri Seçimi */}
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-1.5">
             Müşteri Seçin
@@ -79,7 +78,6 @@ export default function InvoiceForm({ clients }: InvoiceFormProps) {
           </select>
         </div>
 
-        {/* Tarihler - MOBİL AYARI: grid-cols-1 sm:grid-cols-2 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-1.5">
@@ -106,7 +104,6 @@ export default function InvoiceForm({ clients }: InvoiceFormProps) {
           </div>
         </div>
 
-        {/* Tutar ve Durum - MOBİL AYARI: grid-cols-1 sm:grid-cols-2 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-1.5">
@@ -131,6 +128,18 @@ export default function InvoiceForm({ clients }: InvoiceFormProps) {
               <option value="overdue">Vadesi Geçti</option>
             </select>
           </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-1.5">
+            Açıklama (Opsiyonel)
+          </label>
+          <textarea
+            name="description"
+            rows={4}
+            className={inputClass}
+            placeholder="Fatura ile ilgili notlar veya detaylar..."
+          />
         </div>
 
         <button
